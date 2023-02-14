@@ -31,5 +31,5 @@ int main(){
 
     card = rank[rand()%nR] + ' ' + suit[rand()%nS];
 
-    cout << card;
+    cout << '[' << card << ']';
 }
