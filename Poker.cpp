@@ -33,6 +33,17 @@ void shuffle_deck(vector<Card>& deck) {
     shuffle(deck.begin(), deck.end(), g);
 }
 
+/* กันไว้เผื่ออยากใช้ตัวนี้แทน มันใช่ได้จริงแต่มีสิทธิ์ที่จะสุ่ม i=j เสมออยู่
+void shuffle_deck(vector<Card>& deck) {
+    srand(time(nullptr));
+    int n = deck.size();
+    for (int i = n - 1; i > 0; i--) {
+        int j = rand() % (i + 1);
+        swap(deck[i], deck[j]);
+    }
+}
+*/
+
 //ฟังก์ชั่นโชว์การ์ด
 void Show_Community_Card(string R, vector<Card>& deck) {
     int n = deck.size();
