@@ -158,7 +158,7 @@ int main(){
     
     srand(time(0));
     BuildDeck(deck,Cardsuit,Cardface);
-    //shuffledeck(deck);
+    shuffledeck(deck);
 
     // deck test
     /*for(int i = 0; i < 4; i++){
