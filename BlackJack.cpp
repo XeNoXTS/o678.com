@@ -73,10 +73,7 @@ int CheckScore(vector<string> Cards){
         else if(Cards[i] == Cardsuit[1] + Cardface[0]) score += 11;
         else if(Cards[i] == Cardsuit[2] + Cardface[0]) score += 11;
         else if(Cards[i] == Cardsuit[3] + Cardface[0]) score += 11;
-        /*if(Cards[i] == Cardsuit[0] + Cardface[0] ||Cards[2] == Cardsuit[1] + Cardface[0] || Cards[i] == Cardsuit[2] + Cardface[0] || Cards[i] == Cardsuit[3] + Cardface[0]){
-                    if(score > 10) score++;
-                    else if(score <= 10) score += 11;
-        }*/
+
     }
     return score;
 }
@@ -126,8 +123,7 @@ void PlayerAction(){
             //hit
             if(playerhit_stand == "hit"){
                 //draw 
-                //playerCard.push_back(drawcard(deck));
-                //playerscore = CheckScore(playerCard);
+    
                 string newCard = drawcard(deck);
                 
                 //in case get ace
@@ -172,7 +168,7 @@ int main(){
     
     srand(time(0));
     BuildDeck(deck,Cardsuit,Cardface);
-    //shuffledeck(deck);
+    shuffledeck(deck);
 
     // deck test
     /*for(int i = 0; i < 4; i++){
