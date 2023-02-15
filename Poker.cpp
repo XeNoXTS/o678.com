@@ -16,7 +16,7 @@ struct Card {
 //ฟังก์ชั่นสร้างdeckและกำหนดค่าต่างๆในvector
 vector<Card> create_deck() {
     vector<Card> deck;
-    string suits[] = {"H", "D", "C", "S"};
+    string suits[] = {"\3", "\4", "\5", "\6"};
     string ranks[] = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
     for (string suit : suits) {
         for (string rank : ranks) {
