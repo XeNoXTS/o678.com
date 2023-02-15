@@ -73,7 +73,10 @@ int CheckScore(vector<string> Cards){
         else if(Cards[i] == Cardsuit[1] + Cardface[0]) score += 11;
         else if(Cards[i] == Cardsuit[2] + Cardface[0]) score += 11;
         else if(Cards[i] == Cardsuit[3] + Cardface[0]) score += 11;
-
+        /*if(Cards[i] == Cardsuit[0] + Cardface[0] ||Cards[2] == Cardsuit[1] + Cardface[0] || Cards[i] == Cardsuit[2] + Cardface[0] || Cards[i] == Cardsuit[3] + Cardface[0]){
+                    if(score > 10) score++;
+                    else if(score <= 10) score += 11;
+        }*/
     }
     return score;
 }
@@ -126,17 +129,8 @@ void PlayerAction(){
                 //playerCard.push_back(drawcard(deck));
                 //playerscore = CheckScore(playerCard);
                 string newCard = drawcard(deck);
+                
                 //in case get ace
-
-                /*if(playerscore > 21){
-                    for(int i = 0; i < playerCard.size(); i++){
-                        if(playerCard[i] == Cardsuit[0] + Cardface[0]){playerscore -= 10;break;} // ACE value = 1 point
-                        else if(playerCard[i] == Cardsuit[1] + Cardface[0]) {playerscore -= 10;break;}
-                        else if(playerCard[i] == Cardsuit[2] + Cardface[0]) {playerscore -= 10;break;}
-                        else if(playerCard[i] == Cardsuit[3] + Cardface[0]) {playerscore -= 10;break;}
-                    }
-                } */
-
                 if(newCard == Cardsuit[0] + Cardface[0] ||newCard == Cardsuit[1] + Cardface[0] || newCard == Cardsuit[2] + Cardface[0] || newCard == Cardsuit[3] + Cardface[0]){
                     if(playerscore > 10) playerscore++;
                     else if(playerscore <= 10) playerscore += 11;
@@ -144,6 +138,15 @@ void PlayerAction(){
                 }else {
                     playerCard.push_back(newCard);
                     playerscore = CheckScore(playerCard);
+
+                    if(playerscore > 21){
+                        for(int i = 0; i < playerCard.size(); i++){
+                            if(playerCard[i] == Cardsuit[0] + Cardface[0]){playerscore -= 10;break;} // ACE value = 1 point
+                            else if(playerCard[i] == Cardsuit[1] + Cardface[0]) {playerscore -= 10;break;}
+                            else if(playerCard[i] == Cardsuit[2] + Cardface[0]) {playerscore -= 10;break;}
+                            else if(playerCard[i] == Cardsuit[3] + Cardface[0]) {playerscore -= 10;break;}
+                        }
+                    } 
                 }
 
                 //show new cards 
