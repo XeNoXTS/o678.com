@@ -10,7 +10,7 @@ string Cardface[13] = {"A","2","3","4","5","6","7","8","9","10","J","Q","K"};
 string deck[4][13];
 int playerscore = 0;
 
-void BuileDeck(string deck[][13], string Cardsuit[],string Cardface[]){
+void BuildDeck(string deck[][13], string Cardsuit[],string Cardface[]){
     for(int i = 0; i < 4; i++){
         for(int j = 0; j < 13; j++){
             deck[i][j] = Cardsuit[i] + Cardface[j];
@@ -42,25 +42,125 @@ void shuffledeck(string deck[][13]){
 	
 }
 
-void CheckScore(vector<string> Cards){
+int CheckScore(vector<string> Cards){
     int n = Cards.size();
-    
+    int score = 0;
     for(int i = 0; i < n ; i++){
-        for(int j = 2; j <= 10; j++){
-        if(Cards[i] == Cardsuit[0] + Cardface[j]) playerscore += j;
-        else if(Cards[i] == Cardsuit[1] + Cardface[j]) playerscore += j;
-        else if(Cards[i] == Cardsuit[2] + Cardface[j]) playerscore += j;
-        else if(Cards[i] == Cardsuit[3] + Cardface[j]) playerscore += j;
+        //2-10
+        for(int j = 1; j <= 9; j++){
+        if(Cards[i] == Cardsuit[0] + Cardface[j]) score += j+1;
+        else if(Cards[i] == Cardsuit[1] + Cardface[j]) score += j+1;
+        else if(Cards[i] == Cardsuit[2] + Cardface[j]) score += j+1;
+        else if(Cards[i] == Cardsuit[3] + Cardface[j]) score += j+1;
         }
+        //Jack
+        if(Cards[i] == Cardsuit[0] + Cardface[10]) score += 10; 
+        else if(Cards[i] == Cardsuit[1] + Cardface[10]) score += 10;
+        else if(Cards[i] == Cardsuit[2] + Cardface[10]) score += 10;
+        else if(Cards[i] == Cardsuit[3] + Cardface[10]) score += 10; 
+        //Queen
+        if(Cards[i] == Cardsuit[0] + Cardface[11]) score += 10; 
+        else if(Cards[i] == Cardsuit[1] + Cardface[11]) score += 10;
+        else if(Cards[i] == Cardsuit[2] + Cardface[11]) score += 10;
+        else if(Cards[i] == Cardsuit[3] + Cardface[11]) score += 10; 
+        //King
+        if(Cards[i] == Cardsuit[0] + Cardface[12]) score += 10; 
+        else if(Cards[i] == Cardsuit[1] + Cardface[12]) score += 10;
+        else if(Cards[i] == Cardsuit[2] + Cardface[12]) score += 10;
+        else if(Cards[i] == Cardsuit[3] + Cardface[12]) score += 10; 
+        //ACE
+        if(Cards[i] == Cardsuit[0] + Cardface[0]) score += 11; 
+        else if(Cards[i] == Cardsuit[1] + Cardface[0]) score += 11;
+        else if(Cards[i] == Cardsuit[2] + Cardface[0]) score += 11;
+        else if(Cards[i] == Cardsuit[3] + Cardface[0]) score += 11;
+
     }
+    return score;
+}
+
+void PlayerAction(){
     
+    //draw two cards
+    vector<string>playerCard;
+    playerCard.push_back(drawcard(deck)); playerCard.push_back(drawcard(deck));
+
+    //show playercards
+    cout << "You got ";
+    for(unsigned int i = 0; i < playerCard.size(); i++) cout << playerCard[i] << " ";
+    cout << endl;
+
+    //Calulate Score
+    int playerscore = CheckScore(playerCard);
+
+     // In case AA
+            if(playerscore > 21){
+                for(int i = 0; i < playerCard.size(); i++){
+                    if(playerCard[i] == Cardsuit[0] + Cardface[0]){playerscore -= 10;break;} // ACE value = 1 point
+                    else if(playerCard[i] == Cardsuit[1] + Cardface[0]) {playerscore -= 10;break;}
+                    else if(playerCard[i] == Cardsuit[2] + Cardface[0]) {playerscore -= 10;break;}
+                    else if(playerCard[i] == Cardsuit[3] + Cardface[0]) {playerscore -= 10;break;}
+                }
+            }
+
+    //show playerscore
+    cout << "Your score = " << playerscore << endl;
+
+    //case playerscore (only two card) = 21
+    if(playerscore == 21) cout << "BlackJack";
+
+    //hit || stand
+    string playerhit_stand;
+
+    if(playerscore < 21){
+        do{
+            do{
+                cout << "hit or stand" << endl;
+                getline(cin,playerhit_stand);
+
+            }while(playerhit_stand != "hit" && playerhit_stand != "stand");
+
+            //hit
+            if(playerhit_stand == "hit"){
+                //draw 
+                playerCard.push_back(drawcard(deck));
+                playerscore = CheckScore(playerCard);
+
+                //in case get ace
+                if(playerscore > 21){
+                    for(int i = 0; i < playerCard.size(); i++){
+                        if(playerCard[i] == Cardsuit[0] + Cardface[0]){playerscore -= 10;} // ACE value = 1 point
+                        else if(playerCard[i] == Cardsuit[1] + Cardface[0]) {playerscore -= 10;}
+                        else if(playerCard[i] == Cardsuit[2] + Cardface[0]) {playerscore -= 10;}
+                        else if(playerCard[i] == Cardsuit[3] + Cardface[0]) {playerscore -= 10;}
+                    }
+                }
+
+                //show new cards 
+                for(unsigned int i = 0; i < playerCard.size(); i++) cout << playerCard[i] << " ";
+
+                //show new score
+                if(playerscore <= 21) cout << "\nYour new score = " << playerscore << endl;
+
+                // when hit แล้ว playerscores > 21 
+                else if(playerscore > 21){
+                    cout << "\nYour new score = " << playerscore << endl; 
+                    cout << "bust";
+                    }
+
+            }else if(playerhit_stand == "stand"){ // stand ไม่จั่วต่อ
+                break;
+            }
+        }while(playerscore < 21);
+    }
 }
 
 int main(){
     
     srand(time(0));
-    BuileDeck(deck,Cardsuit,Cardface);
-    shuffledeck(deck);
+    BuildDeck(deck,Cardsuit,Cardface);
+    //shuffledeck(deck);
+
+    // deck test
     /*for(int i = 0; i < 4; i++){
         for(int j = 0; j < 13; j++){
             cout << deck[i][j] << " ";
@@ -75,8 +175,5 @@ int main(){
         }
         cout << endl;
     }*/
-
-    vector<string>playerCard;
-    playerCard[0] = drawcard(deck); playerCard[1] = drawcard(deck);
-
+    PlayerAction();
 }
