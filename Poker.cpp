@@ -117,6 +117,28 @@ void Check_Winer(int& chip, int& all_bet, int winner) {
     }
 }
 
+//ฟังก์ชั่นตรวจสอบรูปแบบของcard
+string CheckCard(vector<Card> hand){
+    string result;
+    sort(hand.begin(),hand.end());
+    bool flush = 0;
+    int KindCount = 0;
+    for(int i = 0; i < hand.size()-1;i++){
+        if(hand[i].rank == hand[i+1].rank && hand[i+1].rank == hand[i+2].rank && hand[i+2].rank == hand[i+3].rank) result += " Four of a kind";
+    }
+    for(int i = 0; i < hand.size()-1;i++){
+        if(hand[i].rank == hand[i+1].rank && hand[i+1].rank == hand[i+2].rank) result += " Three of a kind";
+    }
+    for(int i = 0; i < hand.size()-1;i++){
+        if(hand[i].rank == hand[i+1].rank)
+    }
+    if(KindCount == 0)
+    if(KindCount == 1) result = "One Pair";
+    if(KindCount == 2) result = "Two Pair";
+    if(KindCount == 3) result = "Three of a kind";
+    if(KindCount == 4) result = 
+}
+
 int main(){
 
     int Chip=500,All_Bet=0;
@@ -152,7 +174,7 @@ int main(){
     Show_Community_Card("river",deck);
     cout<<"Your Card :: "<<player_hand[0].rank<<player_hand[0].suit<<" "<<player_hand[1].rank<<player_hand[1].suit<<endl;
 
-    //ตามที่เราคุยกันไว้คือจะเอาเข้ามาในมือให้เรียบร้อย_เหมือนทั้ง2คนมี่7ใบ_แล้วทำเงื่อนไขว่าใครชนะ
+    //ตามที่เราคุยกันไว้คือจะเอาเข้ามาในมือให้เรียบร้อย_เหมือนทั้ง2คนมี7ใบ_แล้วทำเงื่อนไขว่าใครชนะ
     for(int i=0;i<5;i++){
         player_hand.push_back(deck.back());
         dealer_hand.push_back(deck.back());
