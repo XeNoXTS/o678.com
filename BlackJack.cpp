@@ -8,7 +8,7 @@ using namespace std;
 string Cardsuit[4] = {"\3","\4","\5","\6"};
 string Cardface[13] = {"A","2","3","4","5","6","7","8","9","10","J","Q","K"};
 string deck[4][13];
-int playerscore = 0;
+
 
 void BuildDeck(string deck[][13], string Cardsuit[],string Cardface[]){
     for(int i = 0; i < 4; i++){
@@ -42,66 +42,74 @@ void shuffledeck(string deck[][13]){
 	
 }
 
-int CheckScore(vector<string> Cards){
-    int n = Cards.size();
-    int score = 0;
-    for(int i = 0; i < n ; i++){
-        //2-10
+void CheckAce(vector<string> Card,int N,int &score){
+    if(score > 21){
+                for(int i = 0; i < N; i++){
+                    if(Card[i] == Cardsuit[0] + Cardface[0]){score -= 10;break;} // ACE value = 1 point
+                    else if(Card[i] == Cardsuit[1] + Cardface[0]) {score -= 10;break;}
+                    else if(Card[i] == Cardsuit[2] + Cardface[0]) {score -= 10;break;}
+                    else if(Card[i] == Cardsuit[3] + Cardface[0]) {score -= 10;break;}
+                }
+            }
+}
+
+void Check2_10(vector<string> Card,int &score, int n){
+    for(int i = 0; i < n; i++){
         for(int j = 1; j <= 9; j++){
-        if(Cards[i] == Cardsuit[0] + Cardface[j]) score += j+1;
-        else if(Cards[i] == Cardsuit[1] + Cardface[j]) score += j+1;
-        else if(Cards[i] == Cardsuit[2] + Cardface[j]) score += j+1;
-        else if(Cards[i] == Cardsuit[3] + Cardface[j]) score += j+1;
+            if(Card[i] == Cardsuit[0] + Cardface[j]) score += j+1;
+            else if(Card[i] == Cardsuit[1] + Cardface[j]) score += j+1;
+            else if(Card[i] == Cardsuit[2] + Cardface[j]) score += j+1;
+            else if(Card[i] == Cardsuit[3] + Cardface[j]) score += j+1;
+            }
+    }
+}
+
+void CheckJQK(vector<string> Card,int &score, int n){
+    char k = 'K', q = 'Q', j = 'J';
+    for(int i = 0; i < n; i++){
+        if(Card[i][1] == k || Card[i][1] == q || Card[i][1] == j){
+            score += 10;
         }
-        //Jack
-        if(Cards[i] == Cardsuit[0] + Cardface[10]) score += 10; 
-        else if(Cards[i] == Cardsuit[1] + Cardface[10]) score += 10;
-        else if(Cards[i] == Cardsuit[2] + Cardface[10]) score += 10;
-        else if(Cards[i] == Cardsuit[3] + Cardface[10]) score += 10; 
-        //Queen
-        if(Cards[i] == Cardsuit[0] + Cardface[11]) score += 10; 
-        else if(Cards[i] == Cardsuit[1] + Cardface[11]) score += 10;
-        else if(Cards[i] == Cardsuit[2] + Cardface[11]) score += 10;
-        else if(Cards[i] == Cardsuit[3] + Cardface[11]) score += 10; 
-        //King
-        if(Cards[i] == Cardsuit[0] + Cardface[12]) score += 10; 
-        else if(Cards[i] == Cardsuit[1] + Cardface[12]) score += 10;
-        else if(Cards[i] == Cardsuit[2] + Cardface[12]) score += 10;
-        else if(Cards[i] == Cardsuit[3] + Cardface[12]) score += 10; 
-        //ACE
+    }
+}
+
+
+int CheckScore(vector<string> Cards){
+    int score = 0;
+    Check2_10(Cards, score, Cards.size());
+    CheckJQK(Cards, score, Cards.size());
+    //Check Ace
+     for(int i = 0; i < Cards.size(); i++)
+     {
         if(Cards[i] == Cardsuit[0] + Cardface[0]) score += 11; 
         else if(Cards[i] == Cardsuit[1] + Cardface[0]) score += 11;
         else if(Cards[i] == Cardsuit[2] + Cardface[0]) score += 11;
         else if(Cards[i] == Cardsuit[3] + Cardface[0]) score += 11;
-
-    }
+     }
     return score;
+}
+
+void ShowCard(vector<string> Cards){
+    for(unsigned int i = 0; i < Cards.size(); i++) cout << Cards[i] << " ";
+    cout << endl;
 }
 
 void PlayerAction(){
     
     //draw two cards
     vector<string>playerCard;
-    playerCard.push_back(drawcard(deck)); 
-    playerCard.push_back(drawcard(deck));
+    playerCard.push_back(deck[1][11]); 
+    playerCard.push_back(deck[3][10]);
 
     //show playercards
-    cout << "You got ";
-    for(unsigned int i = 0; i < playerCard.size(); i++) cout << playerCard[i] << " ";
-    cout << endl;
+    cout << "You get ";
+    ShowCard(playerCard);
 
     //Calulate Score
     int playerscore = CheckScore(playerCard);
 
      // In case AA
-            if(playerscore > 21){
-                for(int i = 0; i < playerCard.size(); i++){
-                    if(playerCard[i] == Cardsuit[0] + Cardface[0]){playerscore -= 10;break;} // ACE value = 1 point
-                    else if(playerCard[i] == Cardsuit[1] + Cardface[0]) {playerscore -= 10;break;}
-                    else if(playerCard[i] == Cardsuit[2] + Cardface[0]) {playerscore -= 10;break;}
-                    else if(playerCard[i] == Cardsuit[3] + Cardface[0]) {playerscore -= 10;break;}
-                }
-            }
+    CheckAce(playerCard,playerCard.size(),playerscore);
 
     //show playerscore
     cout << "Your score = " << playerscore << endl;
@@ -123,7 +131,6 @@ void PlayerAction(){
             //hit
             if(playerhit_stand == "hit"){
                 //draw 
-    
                 string newCard = drawcard(deck);
                 
                 //in case get ace
@@ -134,28 +141,21 @@ void PlayerAction(){
                 }else {
                     playerCard.push_back(newCard);
                     playerscore = CheckScore(playerCard);
-
-                    if(playerscore > 21){
-                        for(int i = 0; i < playerCard.size(); i++){
-                            if(playerCard[i] == Cardsuit[0] + Cardface[0]){playerscore -= 10;break;} // ACE value = 1 point
-                            else if(playerCard[i] == Cardsuit[1] + Cardface[0]) {playerscore -= 10;break;}
-                            else if(playerCard[i] == Cardsuit[2] + Cardface[0]) {playerscore -= 10;break;}
-                            else if(playerCard[i] == Cardsuit[3] + Cardface[0]) {playerscore -= 10;break;}
-                        }
-                    } 
+                    CheckAce(playerCard,playerCard.size(),playerscore);
                 }
 
                 //show new cards 
-                for(unsigned int i = 0; i < playerCard.size(); i++) cout << playerCard[i] << " ";
+                ShowCard(playerCard);
 
                 //show new score
-                if(playerscore <= 21) cout << "\nYour new score = " << playerscore << endl;
+                if(playerscore <= 21) cout << "Your new score = " << playerscore << endl;
 
                 // when hit แล้ว playerscores > 21 
-                else if(playerscore > 21){
-                    cout << "\nYour new score = " << playerscore << endl; 
-                    cout << "bust";
-                    }
+                else if(playerscore > 21)
+                {
+                    cout << "Your new score = " << playerscore << endl; 
+                    cout << "bust" << endl;
+                }
 
             }else if(playerhit_stand == "stand"){ // stand ไม่จั่วต่อ
                 break;
@@ -170,20 +170,6 @@ int main(){
     BuildDeck(deck,Cardsuit,Cardface);
     shuffledeck(deck);
 
-    // deck test
-    /*for(int i = 0; i < 4; i++){
-        for(int j = 0; j < 13; j++){
-            cout << deck[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << drawcard(deck) << endl;
-
-    for(int i = 0; i < 4; i++){
-        for(int j = 0; j < 13; j++){
-            cout << deck[i][j] << " ";
-        }
-        cout << endl;
-    }*/
+    
     PlayerAction();
 }
