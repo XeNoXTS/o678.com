@@ -122,21 +122,19 @@ string CheckCard(vector<Card> hand){
     string result;
     sort(hand.begin(),hand.end());
     bool flush = 0;
-    int KindCount = 0;
-    for(int i = 0; i < hand.size()-1;i++){
-        if(hand[i].rank == hand[i+1].rank && hand[i+1].rank == hand[i+2].rank && hand[i+2].rank == hand[i+3].rank) result += " Four of a kind";
+    for(int i = 0; i < hand.size(); i++){
+        if(hand[i].suit == hand[i+1].suit && hand[i+1].suit == hand[i+2].suit && hand[i+2].suit == hand[i+3].suit && hand[i+3].suit == hand[i+4].suit) flush = 1;
     }
-    for(int i = 0; i < hand.size()-1;i++){
-        if(hand[i].rank == hand[i+1].rank && hand[i+1].rank == hand[i+2].rank) result += " Three of a kind";
+    if(flush){
+        int count = 0;
+        for(int i = 0; i < hand.size(); i++){
+            if(hand[i].rank == "A") count++;
+            if(hand[i].rank == "K") count++;
+            if(hand[i].rank == "Q") count++;
+            if(hand[i].rank == "J") count++;
+            if(hand[i].rank == "10") count++;
+        }
     }
-    for(int i = 0; i < hand.size()-1;i++){
-        if(hand[i].rank == hand[i+1].rank)
-    }
-    if(KindCount == 0)
-    if(KindCount == 1) result = "One Pair";
-    if(KindCount == 2) result = "Two Pair";
-    if(KindCount == 3) result = "Three of a kind";
-    if(KindCount == 4) result = 
 }
 
 int main(){
