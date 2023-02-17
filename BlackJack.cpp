@@ -170,20 +170,6 @@ int main(){
     BuildDeck(deck,Cardsuit,Cardface);
     shuffledeck(deck);
 
-    // deck test
-    /*for(int i = 0; i < 4; i++){
-        for(int j = 0; j < 13; j++){
-            cout << deck[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << drawcard(deck) << endl << drawcard(deck) << endl;
-    cout << drawcard(deck) << endl << drawcard(deck) << endl;
-    for(int i = 0; i < 4; i++){
-        for(int j = 0; j < 13; j++){
-            cout << deck[i][j] << " ";
-        }
-        cout << endl;
-    }*/
+    
     PlayerAction();
 }
