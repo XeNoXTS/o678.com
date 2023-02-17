@@ -16,7 +16,7 @@ struct Card {
 //ฟังก์ชั่นสร้างdeckและกำหนดค่าต่างๆในvector
 vector<Card> create_deck() {
     vector<Card> deck;
-    string suits[] = {"H", "D", "C", "S"};
+    string suits[] = {"\3", "\4", "\5", "\6"};
     string ranks[] = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
     for (string suit : suits) {
         for (string rank : ranks) {
@@ -32,6 +32,17 @@ void shuffle_deck(vector<Card>& deck) {
     mt19937 g(rd()); //ลองไปศึกษาดู ส่วนตัวอย่างนี้สะดวกกว่า
     shuffle(deck.begin(), deck.end(), g);
 }
+
+/* กันไว้เผื่ออยากใช้ตัวนี้แทน มันใช่ได้จริงแต่มีสิทธิ์ที่จะสุ่ม i=j เสมออยู่
+void shuffle_deck(vector<Card>& deck) {
+    srand(time(nullptr));
+    int n = deck.size();
+    for (int i = n - 1; i > 0; i--) {
+        int j = rand() % (i + 1);
+        swap(deck[i], deck[j]);
+    }
+}
+*/
 
 //ฟังก์ชั่นโชว์การ์ด
 void Show_Community_Card(string R, vector<Card>& deck) {
