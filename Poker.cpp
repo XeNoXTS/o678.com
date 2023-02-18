@@ -118,13 +118,26 @@ void Check_Winer(int& chip, int& all_bet, int winner) {
 }
 
 //ฟังก์ชั่นตรวจสอบรูปแบบของcard ตอนนี้พังๆอยู่
-/*string CheckCard(vector<Card> hand){
+string CheckCard(vector<Card> hand){
     string result;
-    sort(hand.begin(),hand.end());
     bool flush = 0;
-    for(int i = 0; i < hand.size(); i++){
+    bool insequence = 0;
+    int samecount = 0;
+    int samecountii = 0;
+    int remb;
+    //หาวิธีเรียงค่าของการ์ดในมืออยู่ กับวิธีตรวจการ์ดในมือ
+    /*for(int i = 0; i < hand.size(); i++){
         if(hand[i].suit == hand[i+1].suit && hand[i+1].suit == hand[i+2].suit && hand[i+2].suit == hand[i+3].suit && hand[i+3].suit == hand[i+4].suit) flush = 1;
-    }
+    }*/
+    /*for(int i = 0;i<hand.size();i++){
+        string key = hand[i].rank;
+        for(int j = 0; j < hand.size();i++){
+            if(key == hand[j].rank && i != j && i != remb){
+                samecount++;
+            }
+        }
+    }*/
+
     if(flush){
         bool A = 0,K = 0, Q = 0, J = 0, T = 0;
         for(int i = 0; i < hand.size(); i++){
@@ -137,7 +150,43 @@ void Check_Winer(int& chip, int& all_bet, int winner) {
         if(A && K && Q && J && T) result = "Royal Flush";
         return result;
     }
-}*/
+    if(insequence && flush){
+        result = "Straight Flush";
+        return result;
+    }
+    if(samecount == 3){
+        result = "Four of a kind";
+        return result;
+    }
+    if(samecount == 2 && samecountii == 1){
+        result = "Full House";
+        return result;
+    }
+    if(flush){
+        result = "Flush";
+        return result;
+    }
+    if(insequence){
+        result = "Straight";
+        return result;
+    }
+    if(samecount == 2){
+        result = "Three of a kind";
+        return result;
+    }
+    if(samecount == 1 && samecountii == 1){
+        result = "Two Pair";
+        return result;
+    }
+    if(samecount == 1){
+        result = "One Pair";
+        return result;
+    }
+    else{
+        result = "High Card";
+        return result;
+    }
+}
 
 int main(){
 
