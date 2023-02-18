@@ -117,8 +117,8 @@ void Check_Winer(int& chip, int& all_bet, int winner) {
     }
 }
 
-//ฟังก์ชั่นตรวจสอบรูปแบบของcard
-string CheckCard(vector<Card> hand){
+//ฟังก์ชั่นตรวจสอบรูปแบบของcard ตอนนี้พังๆอยู่
+/*string CheckCard(vector<Card> hand){
     string result;
     sort(hand.begin(),hand.end());
     bool flush = 0;
@@ -126,16 +126,18 @@ string CheckCard(vector<Card> hand){
         if(hand[i].suit == hand[i+1].suit && hand[i+1].suit == hand[i+2].suit && hand[i+2].suit == hand[i+3].suit && hand[i+3].suit == hand[i+4].suit) flush = 1;
     }
     if(flush){
-        int count = 0;
+        bool A = 0,K = 0, Q = 0, J = 0, T = 0;
         for(int i = 0; i < hand.size(); i++){
-            if(hand[i].rank == "A") count++;
-            if(hand[i].rank == "K") count++;
-            if(hand[i].rank == "Q") count++;
-            if(hand[i].rank == "J") count++;
-            if(hand[i].rank == "10") count++;
+            if(hand[i].rank == "A") A = 1;
+            if(hand[i].rank == "K") K = 1;
+            if(hand[i].rank == "Q") Q = 1;
+            if(hand[i].rank == "J") J = 1;
+            if(hand[i].rank == "10") T = 1;
         }
+        if(A && K && Q && J && T) result = "Royal Flush";
+        return result;
     }
-}
+}*/
 
 int main(){
 
