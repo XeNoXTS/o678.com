@@ -239,23 +239,33 @@ void botoneAction(){
     }
     
 
-/*void checkWinner(int playerscore, int botonescore){  //ยังไม่เสร็จ
+void checkWinner(int playerscore, int botonescore){  //ยังไม่เสร็จ
 	cout << "---------------------------------\n";
 	//(begingameline) simplecheck
-    if (playerscore == 21){
-		cout <<   "|          black jack           |";
-        cout <<   "|         Player wins!!!        |";
-	}else if (playerscore > 21)
-	{
-		cout <<   "|             noob              |";
-        cout <<   "|         Player defeat!!!      |";
-    }else if (botonescore == 21)
-	{
-		cout <<   "|          black jack           |";
-        cout <<   "|         bot one wins!!!       |";}
-    // endgameline simeplecheck
+    for (int i = 0; i < 21; i++)
+        {   int psum,bsum;
+                psum = 21 - playerscore;
+                bsum = 21 - botonescore;
+            if (playerscore <= 21 && botonescore <= 21)
+            {
+                
+            }else if (psum < bsum )
+            {
+                cout << "player win!!! yahu";
+            }else if (playerscore > 21 && botonescore <=21)
+            {
+                cout << "player defeat!!! noob";
+            }else(botonescore > 21 && playerscore <=21);
+            
+                cout << "player win!!! yahu";
+        }
+        // endgameline simeplecheck
+
     cout << "---------------------------------\n";
-}*/ 
+}
+
+    
+ 
 
 int main(){
     srand(time(0));
