@@ -8,12 +8,8 @@ using namespace std;
 string Cardsuit[4] = {"\3","\4","\5","\6"};
 string Cardface[13] = {"A","2","3","4","5","6","7","8","9","10","J","Q","K"};
 string deck[4][13];
-<<<<<<< HEAD
 int playerscore = 0;
 int botonescore = 0;
-=======
-
->>>>>>> 0d4b893b4cf3d313a4f8acac0b3316cd3042f9d1
 
 void BuildDeck(string deck[][13], string Cardsuit[],string Cardface[]){
     for(int i = 0; i < 4; i++){
@@ -245,20 +241,26 @@ void botoneAction(){
 void checkWinner(int playerscore, int botonescore){
 	cout << "\n---------------------------------\n";
 	//(begingameline) simplecheck
-    if (playerscore == 21){
-		cout <<   "|          black jack           |";
-        cout <<   "|         Player wins!!!        |";
-	}else if (playerscore > 21)
-	{
-		cout <<   "|             noob              |";
-        cout <<   "|         Player defeat!!!      |";
-    }else if (botonescore == 21)
-	{
-		cout <<   "|          black jack           |";
-        cout <<   "|         bot one wins!!!       |";
+    for (int i = 0; i < 21; i++)
+    {   int psum,bsum;
+            psum = 21 - playerscore;
+            bsum = 21 - botonescore;
+        if (playerscore <= 21 && botonescore <= 21)
+        {
+            
+        }else if (psum < bsum )
+        {
+            cout << "player win!!! yahu";
+        }else if (playerscore > 21 && botonescore <=21)
+        {
+            cout << "player defeat!!! noob";
+        }else(botonescore > 21 && playerscore <=21);
+        
+            cout << "player win!!! yahu";
+    }
     // endgameline simeplecheck
     cout << "\n---------------------------------\n";
-}
+
 }
 int main(){
     
