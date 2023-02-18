@@ -8,12 +8,13 @@ using namespace std;
 string Cardsuit[4] = {"\3","\4","\5","\6"};
 string Cardface[13] = {"A","2","3","4","5","6","7","8","9","10","J","Q","K"};
 string deck[4][13];
-<<<<<<< HEAD
+
 int playerscore = 0;
 int botonescore = 0;
-=======
 
->>>>>>> 0d4b893b4cf3d313a4f8acac0b3316cd3042f9d1
+int PlayerChip = 500;
+int BotOneChip = 500;
+int all_bet = 0;
 
 void BuildDeck(string deck[][13], string Cardsuit[],string Cardface[]){
     for(int i = 0; i < 4; i++){
@@ -99,17 +100,48 @@ void ShowCard(vector<string> Cards){
     cout << endl;
 }
 
+void Bet(int& chip,int& bchip, int& all_bet) {
+    int bet;
+    while (true) {
+        cout << "Bet: ";
+        cin >> bet;
+        if (chip - bet >= 0) {
+            chip -= bet; bchip -= bet;
+            all_bet += 2 * bet;
+            break;
+        }
+        else {
+            cout << "Not enough chips." << endl;
+        }
+    }
+}
+
+void HitAce(string newCard,int& score,vector<string>&Card){
+    if(newCard == Cardsuit[0] + Cardface[0] ||newCard == Cardsuit[1] + Cardface[0] || newCard == Cardsuit[2] + Cardface[0] || newCard == Cardsuit[3] + Cardface[0]){
+                    if(score > 10) score++;
+                    else if(score <= 10) score += 11;
+                    Card.push_back(newCard);
+                }else {
+                    Card.push_back(newCard);
+                    score = CheckScore(Card);
+                    CheckAce(Card,Card.size(),score);
+                }
+}
+
 void PlayerAction(){
-    
+    cout << "\n---------------------------------\n";
+    cout << "PlayerChip: " << PlayerChip << endl;
     //draw two cards
     vector<string>playerCard;
-    playerCard.push_back(deck[1][11]); 
-    playerCard.push_back(deck[3][10]);
+    playerCard.push_back(drawcard(deck)); 
+    playerCard.push_back(drawcard(deck));
+
+    //Player Bet
+    Bet(PlayerChip,BotOneChip,all_bet);
 
     //show playercards
-    cout << "You get ";
-    ShowCard(playerCard);
-
+    cout << "You get "; ShowCard(playerCard);
+    
     //Calulate Score
     int playerscore = CheckScore(playerCard);
 
@@ -120,12 +152,12 @@ void PlayerAction(){
     cout << "Your score = " << playerscore << endl;
 
     //case playerscore (only two card) = 21
-    if(playerscore == 21) cout << "BlackJack";
+    if(playerscore == 21) cout << "BlackJack!!!" << endl;
 
     //hit || stand
     string playerhit_stand;
 
-    if(playerscore < 21){
+    if(playerscore < 21){ cin.ignore();
         do{
             do{
                 cout << "hit or stand" << endl;
@@ -139,15 +171,7 @@ void PlayerAction(){
                 string newCard = drawcard(deck);
                 
                 //in case get ace
-                if(newCard == Cardsuit[0] + Cardface[0] ||newCard == Cardsuit[1] + Cardface[0] || newCard == Cardsuit[2] + Cardface[0] || newCard == Cardsuit[3] + Cardface[0]){
-                    if(playerscore > 10) playerscore++;
-                    else if(playerscore <= 10) playerscore += 11;
-                    playerCard.push_back(newCard);
-                }else {
-                    playerCard.push_back(newCard);
-                    playerscore = CheckScore(playerCard);
-                    CheckAce(playerCard,playerCard.size(),playerscore);
-                }
+                HitAce(newCard,playerscore,playerCard);
 
                 //show new cards 
                 ShowCard(playerCard);
@@ -159,7 +183,7 @@ void PlayerAction(){
                 else if(playerscore > 21)
                 {
                     cout << "Your new score = " << playerscore << endl; 
-                    cout << "bust" << endl;
+                    cout << "Player bust" << endl;
                 }
 
             }else if(playerhit_stand == "stand"){ // stand ไม่จั่วต่อ
@@ -167,83 +191,56 @@ void PlayerAction(){
             }
         }while(playerscore < 21);
     }
+    cout << "---------------------------------\n";
 }
+
 void botoneAction(){
-    for (int i = 0; i < 21; i++)
-    {
-       //draw two cards
+    cout << "\n---------------------------------\n";
+    cout << "BotoneChip: " << BotOneChip << endl;
+    //draw two cards
     vector<string>botoneCard;
     botoneCard.push_back(drawcard(deck)); 
     botoneCard.push_back(drawcard(deck));
 
     //show botonecards
-    cout << "botone got ";
-    for(unsigned int i = 0; i < botoneCard.size(); i++) cout << botoneCard[i] << " ";
-    cout << endl;
+    cout << "botone get " << botoneCard[0] << " " << "[]" << endl;
 
     //Calulate Score
-    int botonescore = CheckScore(botoneCard);
+    botonescore = CheckScore(botoneCard);
 
      // In case AA
-            if(botonescore > 21){
-                for(int i = 0; i < botoneCard.size(); i++){
-                    if(botoneCard[i] == Cardsuit[0] + Cardface[0]){playerscore -= 10;break;} // ACE value = 1 point
-                    else if(botoneCard[i] == Cardsuit[1] + Cardface[0]) {playerscore -= 10;break;}
-                    else if(botoneCard[i] == Cardsuit[2] + Cardface[0]) {playerscore -= 10;break;}
-                    else if(botoneCard[i] == Cardsuit[3] + Cardface[0]) {playerscore -= 10;break;}
-                }
-            }
+    CheckAce(botoneCard,botoneCard.size(),botonescore);
 
     //show botonescore
-    cout << "botone score = " << botonescore << endl;
-
-    //case botonescore (only two card) = 21
-    if(botonescore == 21) cout << "BlackJack You so noob pair bot";
+    //cout << "botone score = " << botonescore << endl;
 
     //hit || stand for botone
-    if (botonescore < 15)
-    {
-        cout << "hit";
+    if(botonescore < 15){
+        cout << "botone hit " << endl;
         string newCard = drawcard(deck);
         //in case get ace
-                if(newCard == Cardsuit[0] + Cardface[0] ||newCard == Cardsuit[1] + Cardface[0] || newCard == Cardsuit[2] + Cardface[0] || newCard == Cardsuit[3] + Cardface[0]){
-                    if(botonescore > 10) botonescore++;
-                    else if(botonescore <= 10) botonescore += 11;
-                    botoneCard.push_back(newCard);
-                }else {
-                    botoneCard.push_back(newCard);
-                    botonescore = CheckScore(botoneCard);
+        HitAce(newCard,botonescore,botoneCard);
+        //show new botonecards 
+        //for(unsigned int i = 0; i < botoneCard.size(); i++) cout << botoneCard[i] << " ";
+        cout << "hit " << botoneCard[2];
 
-                    if(botonescore > 21){
-                        for(int i = 0; i < botoneCard.size(); i++){
-                            if(botoneCard[i] == Cardsuit[0] + Cardface[0]){botonescore -= 10;break;} // ACE value = 1 point
-                            else if(botoneCard[i] == Cardsuit[1] + Cardface[0]) {botonescore -= 10;break;}
-                            else if(botoneCard[i] == Cardsuit[2] + Cardface[0]) {botonescore -= 10;break;}
-                            else if(botoneCard[i] == Cardsuit[3] + Cardface[0]) {botonescore -= 10;break;}
-                        }
-                    }
-                }
-                //show new botonecards 
-                for(unsigned int i = 0; i < botoneCard.size(); i++) cout << botoneCard[i] << " ";
+        //show new botonescore
+        /*if(botonescore <= 21) cout << "botone score = " << botonescore;
 
-                //show new botonescore
-                if(botonescore <= 21) cout << "\n bot one score = " << botonescore << endl;
+        // lock hit give he botonescores > 21 
+        else if(botonescore > 21){ 
+            cout << "botone score = " << botonescore ; 
+        }*/
 
-                // lock hit give he botonescores > 21 
-                else if(botonescore > 21){
-                    cout << "\n bot one score = " << botonescore << endl; 
-                    cout << "gg";
-                    }
-
-            }else if(botonescore >= 15 ){ // stand botone
-                cout << "stand";
-                break;
-            }
-        }
+    }else if(botonescore >= 15 ){ // stand botone
+        cout << "botone stand";
     }
+        cout << "\n---------------------------------\n";
+    }
+    
 
-void checkWinner(int playerscore, int botonescore){
-	cout << "\n---------------------------------\n";
+/*void checkWinner(int playerscore, int botonescore){  //ยังไม่เสร็จ
+	cout << "---------------------------------\n";
 	//(begingameline) simplecheck
     if (playerscore == 21){
 		cout <<   "|          black jack           |";
@@ -255,17 +252,15 @@ void checkWinner(int playerscore, int botonescore){
     }else if (botonescore == 21)
 	{
 		cout <<   "|          black jack           |";
-        cout <<   "|         bot one wins!!!       |";
+        cout <<   "|         bot one wins!!!       |";}
     // endgameline simeplecheck
-    cout << "\n---------------------------------\n";
-}
-}
+    cout << "---------------------------------\n";
+}*/ 
+
 int main(){
-    
     srand(time(0));
     BuildDeck(deck,Cardsuit,Cardface);
     shuffledeck(deck);
-
-    
+    botoneAction();
     PlayerAction();
 }
