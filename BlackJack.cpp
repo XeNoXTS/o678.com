@@ -236,7 +236,7 @@ void botoneAction(){
         cout << "botone stand";
     }
         cout << "\n---------------------------------\n";
-    }
+}
     
 
 void checkWinner(int playerscore, int botonescore){  //ยังไม่เสร็จ
@@ -264,8 +264,6 @@ void checkWinner(int playerscore, int botonescore){  //ยังไม่เส�
     cout << "---------------------------------\n";
 }
 
-    
- 
 
 int main(){
     srand(time(0));
