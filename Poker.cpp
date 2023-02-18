@@ -117,6 +117,26 @@ void Check_Winer(int& chip, int& all_bet, int winner) {
     }
 }
 
+//ฟังก์ชั่นตรวจสอบรูปแบบของcard
+string CheckCard(vector<Card> hand){
+    string result;
+    sort(hand.begin(),hand.end());
+    bool flush = 0;
+    for(int i = 0; i < hand.size(); i++){
+        if(hand[i].suit == hand[i+1].suit && hand[i+1].suit == hand[i+2].suit && hand[i+2].suit == hand[i+3].suit && hand[i+3].suit == hand[i+4].suit) flush = 1;
+    }
+    if(flush){
+        int count = 0;
+        for(int i = 0; i < hand.size(); i++){
+            if(hand[i].rank == "A") count++;
+            if(hand[i].rank == "K") count++;
+            if(hand[i].rank == "Q") count++;
+            if(hand[i].rank == "J") count++;
+            if(hand[i].rank == "10") count++;
+        }
+    }
+}
+
 int main(){
 
     int Chip=500,All_Bet=0;
@@ -152,7 +172,7 @@ int main(){
     Show_Community_Card("river",deck);
     cout<<"Your Card :: "<<player_hand[0].rank<<player_hand[0].suit<<" "<<player_hand[1].rank<<player_hand[1].suit<<endl;
 
-    //ตามที่เราคุยกันไว้คือจะเอาเข้ามาในมือให้เรียบร้อย_เหมือนทั้ง2คนมี่7ใบ_แล้วทำเงื่อนไขว่าใครชนะ
+    //ตามที่เราคุยกันไว้คือจะเอาเข้ามาในมือให้เรียบร้อย_เหมือนทั้ง2คนมี7ใบ_แล้วทำเงื่อนไขว่าใครชนะ
     for(int i=0;i<5;i++){
         player_hand.push_back(deck.back());
         dealer_hand.push_back(deck.back());
