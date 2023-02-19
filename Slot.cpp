@@ -21,16 +21,12 @@ using namespace std;
 string S_machine[3][5];
 string S_symbol[]={"\3","\4","10","\6","A","J","Q","K"};
 
-int P_chips = 500;
+double P_chips = 500,Cost=10;
 
-void checkwin(){
-
-}
-
-void Show_PL(){//PL = playline
-
-} 
-
+double checkwin();
+void Show_PL(); //PL = playline
+void randslot(int N);
+void P_input(string &);
 string makeUpper(string x){
     string y=x;
     for(unsigned int i=0;i<y.size();i++){
@@ -88,13 +84,14 @@ int main(){
 void P_input(string &command){ 
     cout <<"\n-----------------------\n"<<"Current chips = " << P_chips << endl;
     cout << "Input command \n"<<"-----------------------\n";
-    cout << "S  = 1_spin \nMS = multiple spin \nC  = set amount of chips per 1 spin \nE  = Exit \nH  = help \n: ";
+    cout << "S  = 1_spin \nMS = multiple spin \nC  = set amount of chips per 1 spin(Base = 10) \nE  = Exit \nH  = help \n: ";
     cin >> command;
 }
 
 void randslot(int N){
     for (int k = 0; k < N; k++)
     {
+        P_chips-=Cost;
         cout << endl << "Round :" << k+1 << endl ;
         for(int i=0;i<3;i++){
             cout <<"|";
@@ -104,7 +101,14 @@ void randslot(int N){
             }
         cout <<" |" << endl;
         }
-        cout << setw(23)<< "_______________________" << endl;
-        checkwin();
+        cout << setw(23)<< "-----------------------" << endl;
+        P_chips += checkwin();
     }
+}
+void Show_PL(){
+
+}
+double checkwin(){
+    double calchips=-2;
+    
 }
