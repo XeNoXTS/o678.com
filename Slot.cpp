@@ -38,39 +38,58 @@ string makeUpper(string x){
     }
     return y;
 }
-void randslot(int N);
-void P_input();
+
+void Costset(){
+    int current;
+    cout << "Chips per round(min 1,max 1000) :";
+    cin >> current;
+    if(current>1000 || current<1){
+        cout << "You can't do that Bro! Try again.\n";
+    }else if(current >P_chips){
+        printf("You have %d chips.Try again.\n",P_chips);
+    }else{
+        Cost = current;
+    }
+}
 
 int main(){
     srand(time(0));
+    string command;
+    int round;
+    do{
+        P_input(command);
+        command = makeUpper(command);
+    //check command
+        if(command == "E" || command =="EXIT") 
+            break;
+        else if(command == "MS"){
+            cout << "Input rounds to spin: ";
+            cin >> round; 
+            //check current chips;
+            if(P_chips-(Cost*round)>=0){
+                randslot(round);
+            }else{
+                cout <<"-----------------------\n"<< "You don't have enough chips.Try again.\n"<<"-----------------------\n";
+            }
+        }else if(command == "S"){
+            randslot(1);
+        }else if(command == "H" || command == "HELP"){
+            Show_PL();
+        }else if(command == "C"){
+            Costset();
+        }else{
+            cout <<"-----------------------\n"<< "Invalid Command\n"<<"-----------------------\n";
+        }
 
-    P_input();
+    }while(1);
 
     return 0;
 }
-
-void P_input(){ 
-    int round;
-    string command;
-    cout <<"Current chips = " << P_chips << endl;
-    while(P_chips>=0){
-        cout << "Input command (S = 1_spin,MS = multiple spin,P = playline,H = help,E=Exit): ";
-        cin >> command;
-         command = makeUpper(command);
-         if(command == "E") break;
-         else if(command == "MS"){
-             cout << "Input rounds to spin: ";
-            cin >> round; 
-             randslot(round);
-        }else if(command == "S"){
-             round =1;
-             randslot(round);
-        }else if(command == "H"){
-          Show_PL();
-        }else{
-            cout << "Invalid Command";
-        }
-    }
+void P_input(string &command){ 
+    cout <<"\n-----------------------\n"<<"Current chips = " << P_chips << endl;
+    cout << "Input command \n"<<"-----------------------\n";
+    cout << "S  = 1_spin \nMS = multiple spin \nC  = set amount of chips per 1 spin \nE  = Exit \nH  = help \n: ";
+    cin >> command;
 }
 
 void randslot(int N){
