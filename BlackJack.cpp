@@ -257,7 +257,7 @@ void checkWinner(int playerscore, int botonescore){
             }else if(botonescore > 21 && playerscore <=21)
             {
                 cout << "player win!!! yahu";
-            }else(botonescore == playerscore);
+            }else if(botonescore == playerscore)
             {
                 cout << "Draw!!!";
             }
