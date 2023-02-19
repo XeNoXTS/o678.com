@@ -243,7 +243,7 @@ void checkWinner(int playerscore, int botonescore){  //ยังไม่เส�
 	cout << "---------------------------------\n";
 	//(begingameline) simplecheck
     for (int i = 0; i < 21; i++)
-        {   int psum,bsum;
+        { int psum,bsum;
                 psum = 21 - playerscore;
                 bsum = 21 - botonescore;
             if (playerscore <= 21 && botonescore <= 21)
