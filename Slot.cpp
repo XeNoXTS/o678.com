@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <string>
+#include <iomanip>
 
 
 using namespace std;
@@ -75,15 +76,16 @@ void P_input(){
 void randslot(int N){
     for (int k = 0; k < N; k++)
     {
-        cout << endl << "Round :" << k+1 << endl;
+        cout << endl << "Round :" << k+1 << endl ;
         for(int i=0;i<3;i++){
+            cout <<"|";
             for(int j=0;j<5;j++){
                 S_machine[i][j] = S_symbol[(rand()%8)];
-                cout << S_machine[i][j] << " ";
+                cout << setw(3) << S_machine[i][j] << " ";
             }
-        cout << endl;
+        cout <<" |" << endl;
         }
-        cout << "______________________" << endl;
+        cout << setw(23)<< "_______________________" << endl;
         checkwin();
     }
 }
