@@ -245,8 +245,8 @@ void checkWinner(int pscore, int Dscore){
             if(difDealer > difPlayer) {cout << "Player Win"; PlayerChip += all_bet;} 
             else if(difDealer < difPlayer) {cout << "Dealer Win"; DealerChip += all_bet;}
         }
-        else if(pscore <= 21 && Dscore > 21) {cout << "Player win"; PlayerChip += all_bet;}
-        else if(pscore > 21 && Dscore <= 21) {cout << "Dealer win"; DealerChip += all_bet;}
+        else if((pscore <= 21 && Dscore > 21) || (pscore <= 21 && Dscore > 21)) {cout << "Player win"; PlayerChip += all_bet;}
+        else if((pscore > 21 && Dscore <= 21) || (pscore < 21 && Dscore <= 21)) {cout << "Dealer win"; DealerChip += all_bet;}
         else if((pscore > 21 && Dscore > 21) || (pscore == Dscore)) {cout << "Draw"; PlayerChip += all_bet/2; DealerChip += all_bet/2;}
 
         cout << "\n" << "PlayerChip left " << PlayerChip << endl << "DealerChip left " << DealerChip; 
