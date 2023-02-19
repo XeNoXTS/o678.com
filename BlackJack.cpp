@@ -211,10 +211,10 @@ void DealerAction(){ // 17 == 20 - 30% for hit ถ้า 20 == stand 100%
      // In case AA
     CheckAce(DealerCard,DealerCard.size(),Dealerscore);
 
-    //show botonescore
-    //cout << "botone score = " << botonescore << endl;
+    //show Dealerscore
+    //cout << "Dealer score = " << Dealerscore << endl;
 
-    //hit || stand for botone
+    //hit || stand for Dealer
     if(Dealerscore < 15){
         cout << "Dealer hit " << endl;
         string newCard = drawcard(deck);
@@ -239,30 +239,28 @@ void DealerAction(){ // 17 == 20 - 30% for hit ถ้า 20 == stand 100%
 }
     
 
-void checkWinner(int playerscore, int botonescore){
+void checkWinner(int playerscore, int Dealerscore){
 	cout << "\n---------------------------------\n";
-	//(begingameline) simplecheck
     for (int i = 0; i < 21; i++)
     {   int psum,bsum;
             psum = 21 - playerscore;
-            bsum = 21 - botonescore;
-        if (playerscore <= 21 && botonescore <= 21)
+            bsum = 21 - Dealerscore;
+        if (playerscore <= 21 && Dealerscore <= 21)
         {
             if (psum < bsum)
             {
                 cout << "player win!!! yahu";
-            }else if (playerscore > 21 && botonescore <=21)
-            {
-                cout << "player defeat!!! noob";
-            }else if(botonescore > 21 && playerscore <=21)
-            {
-                cout << "player win!!! yahu";
-            }else if(botonescore == playerscore)
-            {
-                cout << "Draw!!!";
             }
-    }
-    // endgameline simeplecheck
+        }else if (playerscore > 21 && Dealerscore <=21)
+                {
+                    cout << "player defeat!!! noob";
+                }else if(Dealerscore > 21 && playerscore <=21)
+                {
+                    cout << "player win!!! yahu";
+                }else if(Dealerscore == playerscore)
+                {
+                    cout << "Draw!!!";
+                }
     cout << "\n---------------------------------\n";
 }
 }
@@ -272,5 +270,5 @@ int main(){
     BuildDeck(deck,Cardsuit,Cardface);
     shuffledeck(deck);
     PlayerAction();
-    botoneAction();
+    DealerAction();
 }
