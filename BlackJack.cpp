@@ -37,7 +37,6 @@ string drawcard(string deck[][13]){
 }
 
 void shuffledeck(string deck[][13]){
-	
 	for(int i = 0 ; i < 100; i++){
 		int p1 = rand()%4;int p3 = rand()%4;
 		int p2 = rand()%13;int p4 = rand()%13;
@@ -45,18 +44,20 @@ void shuffledeck(string deck[][13]){
 		deck[p1][p2] = deck[p3][p4];
 		deck[p3][p4] = temp;
 	}
-	
 }
 
 void CheckAce(vector<string> Card,int N,int &score){
     if(score > 21){
-                for(int i = 0; i < N; i++){
-                    if(Card[i] == Cardsuit[0] + Cardface[0]){score -= 10;break;} // ACE value = 1 point
-                    else if(Card[i] == Cardsuit[1] + Cardface[0]) {score -= 10;break;}
-                    else if(Card[i] == Cardsuit[2] + Cardface[0]) {score -= 10;break;}
-                    else if(Card[i] == Cardsuit[3] + Cardface[0]) {score -= 10;break;}
-                }
-            }
+        int countace = 0;
+        for(int i = 0; i < N ; i++){
+            char ace = 'A';
+            if(Card[i][1] == ace) countace++;  
+        }
+        if(countace > 1) score -= 10*(countace - 1);
+        else if(countace == 1){
+            if(score > 21) score -= 10;
+        }
+    }
 }
 
 void Check2_10(vector<string> Card,int &score, int n){
@@ -78,7 +79,7 @@ void CheckJQK(vector<string> Card,int &score, int n){
         }
     }
 }
-
+// 4 A A 3
 
 int CheckScore(vector<string> Cards){
     int score = 0;
@@ -135,25 +136,18 @@ void PlayerAction(){
     vector<string>playerCard;
     playerCard.push_back(drawcard(deck)); 
     playerCard.push_back(drawcard(deck));
-
     //Player Bet
     Bet(PlayerChip,DealerChip,all_bet);
-
     //show playercards
     cout << "You get "; ShowCard(playerCard);
-    
     //Calulate Score
     int playerscore = CheckScore(playerCard);
-
      // In case AA
     CheckAce(playerCard,playerCard.size(),playerscore);
-
     //show playerscore
     cout << "Your score = " << playerscore << endl;
-
     //case playerscore (only two card) = 21
     if(playerscore == 21) cout << "BlackJack!!!" << endl;
-
     //hit || stand
     string playerhit_stand;
 
@@ -169,23 +163,18 @@ void PlayerAction(){
             if(playerhit_stand == "hit"){
                 //draw 
                 string newCard = drawcard(deck);
-                
                 //in case get ace
                 HitAce(newCard,playerscore,playerCard);
-
                 //show new cards 
                 ShowCard(playerCard);
-
                 //show new score
                 if(playerscore <= 21) cout << "Your new score = " << playerscore << endl;
-
                 // when hit แล้ว playerscores > 21 
                 else if(playerscore > 21)
                 {
                     cout << "Your new score = " << playerscore << endl; 
                     cout << "Player bust" << endl;
                 }
-
             }else if(playerhit_stand == "stand"){ // stand ไม่จั่วต่อ
                 break;
             }
@@ -194,7 +183,8 @@ void PlayerAction(){
     cout << "---------------------------------\n";
 }
 
-void DealerAction(){ // 17 == 20 - 30% for hit ถ้า 20 == stand 100%
+void DealerAction(){
+    bool Dealerhit_stand = 1;
     cout << "\n---------------------------------\n";
     cout << "DealerChip: " << DealerChip << endl;
     //draw two cards
@@ -202,8 +192,9 @@ void DealerAction(){ // 17 == 20 - 30% for hit ถ้า 20 == stand 100%
     DealerCard.push_back(drawcard(deck)); 
     DealerCard.push_back(drawcard(deck));
 
-    //show botonecards
-    cout << "Dealer get " << DealerCard[0] << " " << "[]" << endl;
+    //show Dealercards
+    ShowCard(DealerCard);
+    //cout << "Dealer get " << DealerCard[0] << " " << "[]" << endl;
 
     //Calulate Score
     Dealerscore = CheckScore(DealerCard);
@@ -211,29 +202,26 @@ void DealerAction(){ // 17 == 20 - 30% for hit ถ้า 20 == stand 100%
      // In case AA
     CheckAce(DealerCard,DealerCard.size(),Dealerscore);
 
-    //show Dealerscore
-    //cout << "Dealer score = " << Dealerscore << endl;
+    //Dealerhit_stand
+    if(Dealerscore <= 17){
+        int Perhit = rand()%100;
+        if(Perhit >= 30) Dealerhit_stand = 1;
+        else Dealerhit_stand = 0;
+    }else if(Dealerscore == 20) Dealerhit_stand = 0;
 
     //hit || stand for Dealer
-    if(Dealerscore < 15){
-        cout << "Dealer hit " << endl;
+    if(Dealerhit_stand == 1){
+        do {cout << "Dealer hit " << endl;
         string newCard = drawcard(deck);
         //in case get ace
         HitAce(newCard,Dealerscore,DealerCard);
-        //show new Dealercards 
-        //for(unsigned int i = 0; i < DealerCard.size(); i++) cout << DealerCard[i] << " ";
-        cout << "hit " << DealerCard[2];
 
-        //show new Dealerscore
-        /*if(Dealerscore <= 21) cout << "Dealer score = " << Dealerscore;
-
-        // lock hit give he Dealerscores > 21 
-        else if(Dealerscore > 21){ 
-            cout << "Dealer score = " << Dealerscore ; 
-        }*/
-
-    }else if(Dealerscore >= 15 ){ 
-        cout << "Dealer stand";
+        cout << "hit " << DealerCard[2] << endl;
+        cout << "Dealer score = " << Dealerscore << endl;
+        }while(Dealerscore < 21);
+    }else{ 
+        cout << "Dealer stand" << endl;
+        cout << "Dealer score = " << Dealerscore << endl;
     }
         cout << "\n---------------------------------\n";
 }
@@ -241,29 +229,38 @@ void DealerAction(){ // 17 == 20 - 30% for hit ถ้า 20 == stand 100%
 
 void checkWinner(int playerscore, int Dealerscore){
 	cout << "\n---------------------------------\n";
-    for (int i = 0; i < 21; i++)
-    {   int psum,bsum;
+    int psum,bsum;
             psum = 21 - playerscore;
             bsum = 21 - Dealerscore;
-        if (playerscore <= 21 && Dealerscore <= 21)
+        if (playerscore < 21 && Dealerscore < 21)
         {
             if (psum < bsum)
             {
                 cout << "player win!!! yahu";
+                PlayerChip += all_bet;
+            }else if(psum > bsum){
+                cout << "player defeat!!! noob";
+                DealerChip += all_bet;
             }
+        }else if(playerscore > 21 && Dealerscore > 21){
+            cout << "Draw!!!"; PlayerChip += all_bet/2; DealerChip += all_bet/2;
         }else if (playerscore > 21 && Dealerscore <=21)
-                {
-                    cout << "player defeat!!! noob";
-                }else if(Dealerscore > 21 && playerscore <=21)
-                {
-                    cout << "player win!!! yahu";
-                }else if(Dealerscore == playerscore)
-                {
-                    cout << "Draw!!!";
-                }
+        {
+            cout << "player defeat!!! noob"; 
+            DealerChip += all_bet;
+        }else if(Dealerscore > 21 && playerscore <=21)
+        {
+            cout << "player win!!! yahu";
+            PlayerChip += all_bet;
+        }else if(Dealerscore == playerscore)
+        {
+            cout << "Draw!!!"; PlayerChip += all_bet/2; DealerChip += all_bet/2;
+        }
+        cout << "\n" << "PlayerChip left " << PlayerChip << endl << "DealerChip left " << DealerChip; 
+
     cout << "\n---------------------------------\n";
 }
-}
+
 
 int main(){
     srand(time(0));
@@ -271,4 +268,5 @@ int main(){
     shuffledeck(deck);
     PlayerAction();
     DealerAction();
-}
+    checkWinner(playerscore,Dealerscore);
+    }
