@@ -79,7 +79,7 @@ void CheckJQK(vector<string> Card,int &score, int n){
         }
     }
 }
-// 4 A A 3
+
 
 int CheckScore(vector<string> Cards){
     int score = 0;
@@ -144,7 +144,7 @@ void PlayerAction(){
     cout << "You get "; ShowCard(playerCard);
 
     //Calulate Score
-    int playerscore = CheckScore(playerCard);
+    playerscore = CheckScore(playerCard);
 
      // In case AA
     CheckAce(playerCard,playerCard.size(),playerscore);
@@ -154,7 +154,7 @@ void PlayerAction(){
 
     //case playerscore (only two card) = 21
     if(playerscore == 21) cout << "BlackJack!!!" << endl;
-    
+
     //hit || stand
     string playerhit_stand;
 
@@ -210,11 +210,15 @@ void DealerAction(){
     CheckAce(DealerCard,DealerCard.size(),Dealerscore);
 
     //Dealerhit_stand
-    if(Dealerscore <= 17){
-        int Perhit = rand()%100;
+    int Perhit = rand()%100;
+    if(Dealerscore <= 17){    
         if(Perhit >= 30) Dealerhit_stand = 1;
         else Dealerhit_stand = 0;
     }else if(Dealerscore == 20) Dealerhit_stand = 0;
+    else if(Dealerscore > 17){
+        if(Perhit >= 90) Dealerhit_stand = 1;
+        else Dealerhit_stand = 0;
+    } 
 
     //hit || stand for Dealer
     if(Dealerhit_stand == 1){
@@ -226,7 +230,7 @@ void DealerAction(){
         cout << "hit " << DealerCard[2] << endl;
         cout << "Dealer score = " << Dealerscore << endl;
         }while(Dealerscore < 21);
-    }else{ 
+    }else if(Dealerhit_stand == 0){ 
         cout << "Dealer stand" << endl;
         cout << "Dealer score = " << Dealerscore << endl;
     }
@@ -234,35 +238,17 @@ void DealerAction(){
 }
     
 
-void checkWinner(int playerscore, int Dealerscore){
+void checkWinner(int pscore, int Dscore){
 	cout << "\n---------------------------------\n";
-    int psum,bsum;
-            psum = 21 - playerscore;
-            bsum = 21 - Dealerscore;
-        if (playerscore < 21 && Dealerscore < 21)
-        {
-            if (psum < bsum)
-            {
-                cout << "player win!!! yahu";
-                PlayerChip += all_bet;
-            }else if(psum > bsum){
-                cout << "player defeat!!! noob";
-                DealerChip += all_bet;
-            }
-        }else if(playerscore > 21 && Dealerscore > 21){
-            cout << "Draw!!!"; PlayerChip += all_bet/2; DealerChip += all_bet/2;
-        }else if (playerscore > 21 && Dealerscore <=21)
-        {
-            cout << "player defeat!!! noob"; 
-            DealerChip += all_bet;
-        }else if(Dealerscore > 21 && playerscore <=21)
-        {
-            cout << "player win!!! yahu";
-            PlayerChip += all_bet;
-        }else if(Dealerscore == playerscore)
-        {
-            cout << "Draw!!!"; PlayerChip += all_bet/2; DealerChip += all_bet/2;
+        if(pscore < 21 && Dscore < 21){
+            int difPlayer = 21 - pscore; int difDealer = 21 - Dscore;
+            if(difDealer > difPlayer) {cout << "Player Win"; PlayerChip += all_bet;} 
+            else if(difDealer < difPlayer) {cout << "Dealer Win"; DealerChip += all_bet;}
         }
+        else if(pscore <= 21 && Dscore > 21) {cout << "Player win"; PlayerChip += all_bet;}
+        else if(pscore > 21 && Dscore <= 21) {cout << "Dealer win"; DealerChip += all_bet;}
+        else if((pscore > 21 && Dscore > 21) || (pscore == Dscore)) {cout << "Draw"; PlayerChip += all_bet/2; DealerChip += all_bet/2;}
+
         cout << "\n" << "PlayerChip left " << PlayerChip << endl << "DealerChip left " << DealerChip; 
 
     cout << "\n---------------------------------\n";
