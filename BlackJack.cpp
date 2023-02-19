@@ -239,37 +239,38 @@ void DealerAction(){ // 17 == 20 - 30% for hit ถ้า 20 == stand 100%
 }
     
 
-void checkWinner(int playerscore, int botonescore){  //ยังไม่เสร็จ
-	cout << "---------------------------------\n";
+void checkWinner(int playerscore, int botonescore){
+	cout << "\n---------------------------------\n";
 	//(begingameline) simplecheck
     for (int i = 0; i < 21; i++)
-        { int psum,bsum;
-                psum = 21 - playerscore;
-                bsum = 21 - botonescore;
-            if (playerscore <= 21 && botonescore <= 21)
-            {
-                
-            }else if (psum < bsum )
+    {   int psum,bsum;
+            psum = 21 - playerscore;
+            bsum = 21 - botonescore;
+        if (playerscore <= 21 && botonescore <= 21)
+        {
+            if (psum < bsum)
             {
                 cout << "player win!!! yahu";
             }else if (playerscore > 21 && botonescore <=21)
             {
                 cout << "player defeat!!! noob";
-            }else(botonescore > 21 && playerscore <=21);
-            
+            }else if(botonescore > 21 && playerscore <=21)
+            {
                 cout << "player win!!! yahu";
-        }
-        // endgameline simeplecheck
-
-    cout << "---------------------------------\n";
+            }else if(botonescore == playerscore)
+            {
+                cout << "Draw!!!";
+            }
+    }
+    // endgameline simeplecheck
+    cout << "\n---------------------------------\n";
 }
-
-
+}
 
 int main(){
     srand(time(0));
     BuildDeck(deck,Cardsuit,Cardface);
     shuffledeck(deck);
     PlayerAction();
-    DealerAction();
+    botoneAction();
 }
