@@ -271,5 +271,4 @@ int main(){
     shuffledeck(deck);
     PlayerAction();
     DealerAction();
-    
 }
