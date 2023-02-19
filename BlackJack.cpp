@@ -271,6 +271,6 @@ int main(){
     BuildDeck(deck,Cardsuit,Cardface);
     shuffledeck(deck);
     PlayerAction();
-
+    
     DealerAction();
 }
