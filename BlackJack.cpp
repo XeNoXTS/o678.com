@@ -10,10 +10,10 @@ string Cardface[13] = {"A","2","3","4","5","6","7","8","9","10","J","Q","K"};
 string deck[4][13];
 
 int playerscore = 0;
-int botonescore = 0;
+int Dealerscore = 0;
 
 int PlayerChip = 500;
-int BotOneChip = 500;
+int DealerChip = 500;
 int all_bet = 0;
 
 void BuildDeck(string deck[][13], string Cardsuit[],string Cardface[]){
@@ -137,7 +137,7 @@ void PlayerAction(){
     playerCard.push_back(drawcard(deck));
 
     //Player Bet
-    Bet(PlayerChip,BotOneChip,all_bet);
+    Bet(PlayerChip,DealerChip,all_bet);
 
     //show playercards
     cout << "You get "; ShowCard(playerCard);
@@ -194,46 +194,46 @@ void PlayerAction(){
     cout << "---------------------------------\n";
 }
 
-void botoneAction(){
+void DealerAction(){
     cout << "\n---------------------------------\n";
-    cout << "BotoneChip: " << BotOneChip << endl;
+    cout << "DealerChip: " << DealerChip << endl;
     //draw two cards
-    vector<string>botoneCard;
-    botoneCard.push_back(drawcard(deck)); 
-    botoneCard.push_back(drawcard(deck));
+    vector<string>DealerCard;
+    DealerCard.push_back(drawcard(deck)); 
+    DealerCard.push_back(drawcard(deck));
 
     //show botonecards
-    cout << "botone get " << botoneCard[0] << " " << "[]" << endl;
+    cout << "Dealer get " << DealerCard[0] << " " << "[]" << endl;
 
     //Calulate Score
-    botonescore = CheckScore(botoneCard);
+    Dealerscore = CheckScore(DealerCard);
 
      // In case AA
-    CheckAce(botoneCard,botoneCard.size(),botonescore);
+    CheckAce(DealerCard,DealerCard.size(),Dealerscore);
 
     //show botonescore
     //cout << "botone score = " << botonescore << endl;
 
     //hit || stand for botone
-    if(botonescore < 15){
-        cout << "botone hit " << endl;
+    if(Dealerscore < 15){
+        cout << "Dealer hit " << endl;
         string newCard = drawcard(deck);
         //in case get ace
-        HitAce(newCard,botonescore,botoneCard);
-        //show new botonecards 
-        //for(unsigned int i = 0; i < botoneCard.size(); i++) cout << botoneCard[i] << " ";
-        cout << "hit " << botoneCard[2];
+        HitAce(newCard,Dealerscore,DealerCard);
+        //show new Dealercards 
+        //for(unsigned int i = 0; i < DealerCard.size(); i++) cout << DealerCard[i] << " ";
+        cout << "hit " << DealerCard[2];
 
-        //show new botonescore
-        /*if(botonescore <= 21) cout << "botone score = " << botonescore;
+        //show new Dealerscore
+        /*if(Dealerscore <= 21) cout << "Dealer score = " << Dealerscore;
 
-        // lock hit give he botonescores > 21 
-        else if(botonescore > 21){ 
-            cout << "botone score = " << botonescore ; 
+        // lock hit give he Dealerscores > 21 
+        else if(Dealerscore > 21){ 
+            cout << "Dealer score = " << Dealerscore ; 
         }*/
 
-    }else if(botonescore >= 15 ){ // stand botone
-        cout << "botone stand";
+    }else if(Dealerscore >= 15 ){ 
+        cout << "Dealer stand";
     }
         cout << "\n---------------------------------\n";
 }
@@ -269,6 +269,7 @@ int main(){
     srand(time(0));
     BuildDeck(deck,Cardsuit,Cardface);
     shuffledeck(deck);
-    botoneAction();
     PlayerAction();
+    DealerAction();
+    
 }
