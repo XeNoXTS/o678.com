@@ -194,7 +194,7 @@ void PlayerAction(){
     cout << "---------------------------------\n";
 }
 
-void DealerAction(){
+void DealerAction(){ // 17 == 20 - 30% for hit ถ้า 20 == stand 100%
     cout << "\n---------------------------------\n";
     cout << "DealerChip: " << DealerChip << endl;
     //draw two cards
@@ -265,10 +265,12 @@ void checkWinner(int playerscore, int botonescore){  //ยังไม่เส�
 }
 
 
+
 int main(){
     srand(time(0));
     BuildDeck(deck,Cardsuit,Cardface);
     shuffledeck(deck);
     PlayerAction();
+
     DealerAction();
 }
