@@ -136,18 +136,25 @@ void PlayerAction(){
     vector<string>playerCard;
     playerCard.push_back(drawcard(deck)); 
     playerCard.push_back(drawcard(deck));
+
     //Player Bet
     Bet(PlayerChip,DealerChip,all_bet);
+
     //show playercards
     cout << "You get "; ShowCard(playerCard);
+
     //Calulate Score
     int playerscore = CheckScore(playerCard);
+
      // In case AA
     CheckAce(playerCard,playerCard.size(),playerscore);
+
     //show playerscore
     cout << "Your score = " << playerscore << endl;
+
     //case playerscore (only two card) = 21
     if(playerscore == 21) cout << "BlackJack!!!" << endl;
+    
     //hit || stand
     string playerhit_stand;
 
