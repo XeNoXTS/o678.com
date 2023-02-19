@@ -247,20 +247,42 @@ void checkWinner(int playerscore, int botonescore){
             bsum = 21 - botonescore;
         if (playerscore <= 21 && botonescore <= 21)
         {
-            
-        }else if (psum < bsum )
-        {
-            cout << "player win!!! yahu";
-        }else if (playerscore > 21 && botonescore <=21)
-        {
-            cout << "player defeat!!! noob";
-        }else(botonescore > 21 && playerscore <=21);
-        
-            cout << "player win!!! yahu";
+            if (psum < bsum)
+            {
+                cout << "player win!!! yahu";
+            }else if (playerscore > 21 && botonescore <=21)
+            {
+                cout << "player defeat!!! noob";
+            }else if(botonescore > 21 && playerscore <=21)
+            {
+                cout << "player win!!! yahu";
+            }else if (botonescore == playerscore)
+            {
+                cout << "Draw!!!";
+            }
     }
     // endgameline simeplecheck
     cout << "\n---------------------------------\n";
+}
+}
+int sum = rand()%4+1;
+switch (sum)
+{
+case 1:
+    botoneAction();
+    break;
+case 2:
+    bottwoAction();
+    break;
+case 3:
+    botthreeAction();
+    break;
+case 4:
+    botfourAction();
+    break;
 
+default:
+    break;
 }
 int main(){
     
