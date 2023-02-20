@@ -265,10 +265,12 @@ void checkWinner(int pscore, int Dscore){
 
 
 int main(){
+
     srand(time(0));
     BuildDeck(deck,Cardsuit,Cardface);
     shuffledeck(deck);
     PlayerAction();
     DealerAction();
-    checkWinner(playerscore,Dealerscore);
+    checkWinner(playerscore,Dealerscore);\
+    
     }
