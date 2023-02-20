@@ -8,13 +8,13 @@
 using namespace std;
 
 //ทำstruct เก็บ ชนิดกับค่าของไฟ่
-struct Card {
+struct Card{
     string rank;
     string suit;    
 };
 
 //ฟังก์ชั่นสร้างdeckและกำหนดค่าต่างๆในvector
-vector<Card> create_deck() {
+vector<Card> create_deck(){
     vector<Card> deck;
     string suits[] = {"\3", "\4", "\5", "\6"};
     string ranks[] = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
@@ -118,12 +118,36 @@ void Check_Winer(int& chip, int& all_bet, int winner) {
 }
 
 //ฟังก์ชั่นตรวจสอบรูปแบบของcard ตอนนี้พังๆอยู่
-/*string CheckCard(vector<Card> hand){
+string CheckCard(vector<Card> hand){
     string result;
-    sort(hand.begin(),hand.end());
+    //sort(hand.begin(),hand.end());
     bool flush = 0;
+    bool insequence = 0;
+    bool gotsame = 0;
+    bool gotsameii = 0;
+    int samecount = 0;
+    int samecountii = 0;
     for(int i = 0; i < hand.size(); i++){
         if(hand[i].suit == hand[i+1].suit && hand[i+1].suit == hand[i+2].suit && hand[i+2].suit == hand[i+3].suit && hand[i+3].suit == hand[i+4].suit) flush = 1;
+    }
+    for(int i = 0;i<hand.size();i++){
+        string key = hand[i].rank;
+        int remb;
+        for(int j = 0; j < hand.size();i++){
+            if(key == hand[j].rank && i != j){
+                if(gotsame == 0){
+                    gotsame == 1;
+                    remb = i;
+                    samecount++;
+                }
+                if(gotsame == 1){
+                    if(i == remb)samecount++;
+                }else{
+                    gotsameii = 1;
+                }
+                if(gotsameii == 1)samecountii++;
+            }
+        }
     }
     if(flush){
         bool A = 0,K = 0, Q = 0, J = 0, T = 0;
@@ -137,7 +161,43 @@ void Check_Winer(int& chip, int& all_bet, int winner) {
         if(A && K && Q && J && T) result = "Royal Flush";
         return result;
     }
-}*/
+    if(insequence && flush){
+        result = "Straight Flush";
+        return result;
+    }
+    if(samecount == 3){
+        result = "Four of a kind";
+        return result;
+    }
+    if(samecount == 2 && samecountii == 1){
+        result = "Full House";
+        return result;
+    }
+    if(flush){
+        result = "Flush";
+        return result;
+    }
+    if(insequence){
+        result = "Straight";
+        return result;
+    }
+    if(samecount == 2){
+        result = "Three of a kind";
+        return result;
+    }
+    if(samecount == 1 && samecountii == 1){
+        result = "Two Pair";
+        return result;
+    }
+    if(samecount == 1){
+        result = "One Pair";
+        return result;
+    }
+    else{
+        result = "High Card";
+        return result;
+    }
+}
 
 int main(){
 
@@ -157,8 +217,8 @@ int main(){
     }
 
     //preflop_เหมือนรอบ0นั้นแหละ
-    cout<<"Your Chip ::"<<Chip<<endl;
-    cout<<"Your Card :: "<<player_hand[0].rank<<player_hand[0].suit<<" "<<player_hand[1].rank<<player_hand[1].suit<<endl;
+    cout<<"Your Chip ::" << Chip << endl;
+    cout<<"Your Card :: " << player_hand[0].rank<<player_hand[0].suit << " " << player_hand[1].rank<<player_hand[1].suit << endl;
     Bet(Chip,All_Bet);
 
     //flop_เหมือนรอบแรกนั้นแหละจะลงเท่าไหร่หรือหมอบ
@@ -170,9 +230,9 @@ int main(){
     Choose(Chip,All_Bet,dealer_hand);
 
     //ตามข้างบนรอบจบ_เปิดการ์ดทุกคนแล้วนับแต้ม
-    cout<<"Dealer Card :: "<<dealer_hand[0].rank<<dealer_hand[0].suit<<" "<<dealer_hand[1].rank<<dealer_hand[1].suit<<endl;
+    cout << "Dealer Card :: " <<  dealer_hand[0].rank << dealer_hand[0].suit << " " << dealer_hand[1].rank << dealer_hand[1].suit << endl;
     Show_Community_Card("river",deck);
-    cout<<"Your Card :: "<<player_hand[0].rank<<player_hand[0].suit<<" "<<player_hand[1].rank<<player_hand[1].suit<<endl;
+    cout << "Your Card :: " <<  player_hand[0].rank << player_hand[0].suit << " " << player_hand[1].rank << player_hand[1].suit << endl;
 
     //ตามที่เราคุยกันไว้คือจะเอาเข้ามาในมือให้เรียบร้อย_เหมือนทั้ง2คนมี7ใบ_แล้วทำเงื่อนไขว่าใครชนะ
     for(int i=0;i<5;i++){
