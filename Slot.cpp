@@ -4,29 +4,26 @@
 #include <string>
 #include <iomanip>
 
-
 using namespace std;
 
-/* 
--Slot size 3*5 
--rand symbols
--check win cond
--P_input
--help --- > show playline
-*/
-
-
+enum {
+    Nrow=3,Ncol=5
+};
+#define S_row for(int row=0;row<Nrow;row++) 
+#define S_col for(int col=0;col<Ncol;col++) 
+#define Run_sym for(int sym=0;sym<8;sym++) //ไล่ sym ที่มี ใช่ในcheckwin
 //S==Slot
 //P == Player
-string S_machine[3][5];
-string S_symbol[]={"\3","\4","10","\6","A","J","Q","K"};
+string S_machine[Nrow][Ncol],key;
+string S_symbol[]={"\6","\3","\4","A","K","Q","J","10"}; // \3=heart \4=diamond \6=spade
 
-double P_chips = 500,Cost=10;
+double P_chips = 500,Cost=10,C_multi=-99999; //multi=ตัวคูณ Cost=ราคา/1spin
 
 double checkwin();
 void Show_PL(); //PL = playline
 void randslot(int N);
 void P_input(string &);
+void mutiplier(int);
 string makeUpper(string x){
     string y=x;
     for(unsigned int i=0;i<y.size();i++){
@@ -34,7 +31,6 @@ string makeUpper(string x){
     }
     return y;
 }
-
 void Costset(){
     int current;
     cout << "Chips per round(min 1,max 1000) :";
@@ -81,6 +77,7 @@ int main(){
 
     return 0;
 }
+
 void P_input(string &command){ 
     cout <<"\n-----------------------\n"<<"Current chips = " << P_chips << endl;
     cout << "Input command \n"<<"-----------------------\n";
@@ -93,11 +90,11 @@ void randslot(int N){
     {
         P_chips-=Cost;
         cout << endl << "Round :" << k+1 << endl ;
-        for(int i=0;i<3;i++){
+        S_row{
             cout <<"|";
-            for(int j=0;j<5;j++){
-                S_machine[i][j] = S_symbol[(rand()%8)];
-                cout << setw(3) << S_machine[i][j] << " ";
+            S_col{
+                S_machine[row][col] = S_symbol[(rand()%8)];
+                cout << setw(3) << S_machine[row][col] << " ";
             }
         cout <<" |" << endl;
         }
@@ -105,10 +102,127 @@ void randslot(int N){
         P_chips += checkwin();
     }
 }
+
+
 void Show_PL(){
 
 }
+
 double checkwin(){
-    double calchips=-2;
-    
+    double cal=0; 
+    int count=0;
+    //check same 3-5 in a row case
+    Run_sym{
+        key=S_symbol[sym];
+        S_row{
+            S_col{
+                if(key==S_machine[row][col]){
+                    count++;//find amount of same symbol in row
+                }
+            }
+            //หาตัวคูณต่อ
+        count=0; //new row set 0
+        //cout << key << "count = "<< count <<"::";
+        }
+    }
+
+    //check V case
+    Run_sym{
+        count=0;
+        key=S_symbol[sym];
+        S_row{
+            S_col{
+                if(row==col || row+col==4){
+                    if (key==S_machine[row][col]){
+                        count++;
+                    }    
+                }
+            }
+       
+        }
+        //หาตัวคูณต่อ            
+        //cout << key << "count = "<< count <<"::";
+    }
+    //check ^ case
+    Run_sym{
+        count=0;
+        key=S_symbol[sym];
+        S_row{
+            S_col{
+                if(row+col==Ncol/2 || row+2==col){
+                    if (key==S_machine[row][col]){
+                        count++;
+                    }    
+                }
+            }
+       
+        }
+        //cout << key << "count = "<< count <<"::";
+        //หาตัวคูณต่อ
+    }
+
+    //check m case0=ครึ่งบน case1=ครึ่งล่าง
+    for(int cases=0;cases<2;cases++){
+        Run_sym{
+            count=0;
+            key=S_symbol[sym];
+                S_row{
+                    S_col{
+                        if(row+col==1+cases || row+col==1+(Ncol/2)+cases || row+col==Ncol+cases){
+                            if (cases==0 &&row!=Nrow-1 && key==S_machine[row][col]){
+                                count++;                            
+                            }else if( row!=0 && key==S_machine[row][col]){
+                                if(cases ==1)count++;
+                            }
+                        }
+                    }
+       
+                }
+            //หาตัวคูณต่อ
+           // cout << key << "count = "<< count <<"::";
+            count=0;
+        }
+    }
+
+    //check M เว้นกลาง
+    Run_sym{
+        count=0;
+        key=S_symbol[sym];
+        S_row{
+            S_col{
+                if(key==S_machine[row][col]){
+                    if (row==Nrow-1 && (row+col)%2==0){
+                        count++;
+                    }else if(row==0 && (row+col)%2==1){
+                        count++;
+                    }    
+                }
+            }
+       
+        }
+       // cout << key << "count = "<< count <<"::";
+        //หาตัวคูณต่อ
+    }
+
+    //check w บนล่าง
+    for(int cases=0;cases<2;cases++){ //0=w บน, 1=wล่าง
+        Run_sym{
+            count=0;
+            key=S_symbol[sym];
+                S_row{
+                    S_col{
+                        if(key==S_machine[row][col]){
+                            if (cases==0&& row !=Nrow-1 && (row+col)%2==0 ){
+                                count++;
+                            }else if(row!=0 && (row+col)%2==1){
+                                if(cases==1)count++;
+                            }     
+                        }
+                    }
+                }
+            //หาตัวคูณต่อ
+            cout << key << "count = "<< count <<"::";
+        }
+    }
+    return cal;
 }
