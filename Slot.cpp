@@ -86,7 +86,7 @@ void P_input(string &command){
 }
 
 void randslot(int N){
-    for (int k = 0; k < N; k++)
+    for (int k = 0; k < N; k++)//random N times
     {
         P_chips-=Cost;
         cout << endl << "Round :" << k+1 << endl ;
@@ -221,8 +221,99 @@ double checkwin(){
                     }
                 }
             //หาตัวคูณต่อ
-            cout << key << "count = "<< count <<"::";
+          //  cout << key << "count = "<< count <<"::";
         }
+    }
+
+    //check W เว้นแถวกลาง
+    Run_sym{
+        count=0;
+        key=S_symbol[sym];
+        S_row{
+            S_col{
+                if(key==S_machine[row][col]){
+                    if (row==Nrow-1 && (row+col)%2==1){
+                        count++;
+                    }else if(row==0 && (row+col)%2==0){
+                        count++;
+                    }    
+                }
+            }
+       
+        }
+       //cout << key << "count = "<< count <<"::";
+        //หาตัวคูณต่อ
+    }
+    //check /.\ .
+    Run_sym{
+        count=0;
+        key=S_symbol[sym];
+        S_row{
+            S_col{
+                if(key==S_machine[row][col]){
+                    if ((row==Nrow-1 && col==Ncol/2)/*ตัวกลางล่าง*/|| ((row+col)%2==1 && row!=Nrow-1 && col!=Ncol/2)){
+                        count++;
+                    }
+                }
+            }
+       
+        }
+      // cout << key << "count = "<< count <<"::";
+        //หาตัวคูณต่อ
+    }
+
+    //check case \*/
+    Run_sym{
+        count=0;
+        key=S_symbol[sym];
+        S_row{
+            S_col{
+                if(key==S_machine[row][col]){
+                    if ((row == 0 && col==Ncol/2)/*ตัวกลางบน*/|| ((row+col)%2==1 && row!=0 && col!=Ncol/2)){
+                        count++;
+                    }
+                }
+            }
+       
+        }
+     //  cout << key << "count = "<< count <<"::";
+        //หาตัวคูณต่อ
+    }
+
+    //check case *...*
+    Run_sym{
+        count=0;
+        key=S_symbol[sym];
+        S_row{
+            S_col{
+                if(key==S_machine[row][col]){
+                    if ((row==0 && (col==0||col==Ncol-1)) || (row==Nrow-1 && (col!=0 &&col!=Ncol-1))){
+                        count++;
+                    }
+                }
+            }
+       
+        }
+      // cout << key << "count = "<< count <<"::";
+        //หาตัวคูณต่อ
+    }
+
+    //check case .***.
+    Run_sym{
+        count=0;
+        key=S_symbol[sym];
+        S_row{
+            S_col{
+                if(key==S_machine[row][col]){
+                    if ((row==Nrow-1 && (col==0||col==Ncol-1)) || (row==0 && (col!=0 &&col!=Ncol-1))){
+                        count++;
+                    }
+                }
+            }
+       
+        }
+      // cout << key << "count = "<< count <<"::";
+        //หาตัวคูณต่อ
     }
     return cal;
 }
