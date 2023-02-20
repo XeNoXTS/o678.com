@@ -53,10 +53,11 @@ void CheckAce(vector<string> Card,int N,int &score){
             char ace = 'A';
             if(Card[i][1] == ace) countace++;  
         }
-        if(countace > 1) score -= 10*(countace - 1);
-        else if(countace == 1){
+            if(countace > 1) score -= 10*(countace - 1);
+            else if(countace == 1)
+            {
             if(score > 21) score -= 10;
-        }
+            }
     }
 }
 
