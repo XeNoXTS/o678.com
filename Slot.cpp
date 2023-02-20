@@ -85,7 +85,7 @@ int main(){
 void P_input(string &command){ //get input from user
     cout <<"\n-----------------------\n"<<"Current chips = " << P_chips << endl;
     cout <<"Cost per round = "<< Cost << "\nInput command \n"<<"-----------------------\n";
-    cout << "S  = 1_spin \nMS = multiple spin \nC  = set amount of chips per 1 spin \nE  = Exit \nH  = help \n: ";
+    cout << "S  = 1 spin \nMS = multiple spin \nC  = set amount of chips per 1 spin \nE  = Exit \nH  = help \n: ";
     cin >> command;
 }
 
