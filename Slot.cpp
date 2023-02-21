@@ -22,7 +22,7 @@ string symbol[]={"\6","\3","\4","A","K","Q","J","10"}; // \3=heart \4=diamond \6
 double P_chips = 500,C_multi=0; //multi=ตัวคูณ Cost=ราคา/1spin
 int Cost=10; //default cost per round
 double checkwin();
-void Show_PL(); //PL = playline
+void Help(); //PL = playline
 void randslot(int N);
 void P_input(string &);
 void mutiplier(int);
@@ -107,8 +107,10 @@ void randslot(int N){//random symbol
     }
 }
 
-void Show_PL(){
-
+void Help(){
+ //แสดง playline ทั้งหมด 
+ //แสดงเรทของแต่ละตัว
+ //อธิบายนิดหน่อยว่าแบบไหนชนะ
 }
 
 double checkwin(){//check win
