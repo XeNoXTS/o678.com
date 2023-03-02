@@ -108,7 +108,7 @@ void randslot(int N){//random symbol
 }
 
 void Help(){
-    cout << "----------------Pay line(X)------------------\n";
+    cout << "----------------Pay line(X)------------------\n\n";
 
     cout << "(1) X X X X X\t" << "(2) O O O O O\t" << "(3) O O O O O\n";
     cout <<   "\tO O O O O" <<   "\t\tX X X X X" <<   "\t\tO O O O O\n";
@@ -130,9 +130,16 @@ void Help(){
     cout <<   "\tO X O X O" <<   "\t\tX O X O X" <<   "\t\tO O O O O\n";
     cout <<   "\tO O O O O" <<   "\t\tO X O X O" <<   "\t\tO X O X O\n\n";
 
-    cout << "--------------------Rate---------------------\n";
-    cout << "\n\n\n\n\n\n";
-    
+    cout << "--------------------Rate---------------------\n\n";
+    cout << "-\6-\t\t\t\t"<<"-\3-\t\t\t\t"<<"-\4-\n";
+    cout << "5 - ฿20.00\t\t"<<"5 - ฿12.50\t\t"<<"5 - ฿7.50\n";
+    cout << "4 - ฿5.00\t\t"<<"4 - ฿3.75\t\t"<<"4 - ฿2.00\n";
+    cout << "3 - ฿1.50\t\t"<<"3 - ฿1.25\t\t"<<"3 - ฿0.75\n\n";
+
+    cout << "-A-\t\t\t\t"<<"-K-\t\t\t\t"<<"-Q-\t\t\t\t"<<"-J-\t\t\t\t"<<"-10-\n";
+    cout << "5 - ฿1.50\t\t"<<"5 - ฿1.50\t\t"<<"5 - ฿1.00\t\t"<<"5 - ฿1.00\t\t"<<"5 - ฿1.00\n";
+    cout << "4 - ฿0.30\t\t"<<"4 - ฿0.30\t\t"<<"4 - ฿0.25\t\t"<<"4 - ฿0.25\t\t"<<"4 - ฿0.25\n";
+    cout << "3 - ฿0.15\t\t"<<"3 - ฿0.15\t\t"<<"3 - ฿0.10\t\t"<<"3 - ฿0.10\t\t"<<"3 - ฿0.10\n\n";
 
     cout << "--------------------Rule---------------------\n";
     cout << "1.You will win if 3 or more similar symbol laying\nsame with the patern of payline.\n";
