@@ -130,11 +130,14 @@ void Help(){
     cout <<   "\tO X O X O" <<   "\t\tX O X O X" <<   "\t\tO O O O O\n";
     cout <<   "\tO O O O O" <<   "\t\tO X O X O" <<   "\t\tO X O X O\n\n";
 
+    cout << "--------------------Rate---------------------\n";
+    cout << "\n\n\n\n\n\n";
+    
 
     cout << "--------------------Rule---------------------\n";
     cout << "1.You will win if 3 or more similar symbol laying\nsame with the patern of payline.\n";
     cout << "2.The different symbol give the different price.\nThe price are showing in Rate topic.\n";
-    cout << "---------------------------------------------"\n;
+    cout << "---------------------------------------------\n";
 
  //แสดง playline ทั้งหมด 
  //แสดงเรทของแต่ละตัว
