@@ -70,7 +70,7 @@ int main(){
         }else if(command == "S"){
             randslot(1);
         }else if(command == "H" || command == "HELP"){
-            Show_PL();
+            Help();
         }else if(command == "C"){
             Costset();
         }else{
@@ -108,6 +108,34 @@ void randslot(int N){//random symbol
 }
 
 void Help(){
+    cout << "----------------Pay line(X)------------------\n";
+
+    cout << "(1) X X X X X\t" << "(2) O O O O O\t" << "(3) O O O O O\n";
+    cout <<   "\tO O O O O" <<   "\t\tX X X X X" <<   "\t\tO O O O O\n";
+    cout <<   "\tO O O O O" <<   "\t\tO O O O O" <<   "\t\tX X X X X\n\n";
+
+    cout << "(4) X O O O X\t" << "(5) O O X O O\t" << "(6) O X O X O\n";
+    cout <<   "\tO X O X O" <<   "\t\tO X O X O" <<   "\t\tX O O O X\n";
+    cout <<   "\tO O X O O" <<   "\t\tX O O O X" <<   "\t\tO O X O O\n\n";
+    
+    cout << "(7) O O X O O\t" << "(8) X O O O X\t" << "(9) O X X X O\n";
+    cout <<   "\tX O O O X" <<   "\t\tO O O O O" <<   "\t\tO O O O O\n";
+    cout <<   "\tO X O X O" <<   "\t\tO X X X O" <<   "\t\tX O O O X\n\n";
+
+    cout << "(10)O X O X O\t" <<"(11)O O O O O\t" <<"(12)O X O X O\n";
+    cout <<   "\tX O X O X" <<   "\t\tO X O X O" <<   "\t\tO O O O O\n";
+    cout <<   "\tO O O O O" <<   "\t\tX O X O X" <<   "\t\tX O X O X\n\n";
+
+    cout << "(13)X O X O X\t" <<"(14)O O O O O\t" <<"(15)X O X O X\n";
+    cout <<   "\tO X O X O" <<   "\t\tX O X O X" <<   "\t\tO O O O O\n";
+    cout <<   "\tO O O O O" <<   "\t\tO X O X O" <<   "\t\tO X O X O\n\n";
+
+
+    cout << "--------------------Rule---------------------\n";
+    cout << "1.You will win if 3 or more similar symbol laying\nsame with the patern of payline.\n";
+    cout << "2.The different symbol give the different price.\nThe price are showing in Rate topic.\n";
+    cout << "---------------------------------------------"\n;
+
  //แสดง playline ทั้งหมด 
  //แสดงเรทของแต่ละตัว
  //อธิบายนิดหน่อยว่าแบบไหนชนะ
