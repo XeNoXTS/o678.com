@@ -101,6 +101,7 @@ void randslot(int N){//random symbol
                 cout << setw(3) << S_machine[row][col] << " ";
             }
         cout <<" |" << endl;
+     //   _sleep(unsigned int (500));
         }
         cout << setw(23)<< "-----------------------" << endl;
         P_chips += checkwin();
@@ -111,35 +112,35 @@ void Help(){
     cout << "----------------Pay line(X)------------------\n\n";
 
     cout << "(1) X X X X X\t" << "(2) O O O O O\t" << "(3) O O O O O\n";
-    cout <<   "\tO O O O O" <<   "\t\tX X X X X" <<   "\t\tO O O O O\n";
-    cout <<   "\tO O O O O" <<   "\t\tO O O O O" <<   "\t\tX X X X X\n\n";
+    cout <<   "    O O O O O" << "\t    X X X X X" << "\t    O O O O O\n";
+    cout <<   "    O O O O O" << "\t    O O O O O" << "\t    X X X X X\n\n";
 
     cout << "(4) X O O O X\t" << "(5) O O X O O\t" << "(6) O X O X O\n";
-    cout <<   "\tO X O X O" <<   "\t\tO X O X O" <<   "\t\tX O O O X\n";
-    cout <<   "\tO O X O O" <<   "\t\tX O O O X" <<   "\t\tO O X O O\n\n";
+    cout <<   "    O X O X O" <<   "\t    O X O X O" <<   "\t    X O O O X\n";
+    cout <<   "    O O X O O" <<   "\t    X O O O X" <<   "\t    O O X O O\n\n";
     
     cout << "(7) O O X O O\t" << "(8) X O O O X\t" << "(9) O X X X O\n";
-    cout <<   "\tX O O O X" <<   "\t\tO O O O O" <<   "\t\tO O O O O\n";
-    cout <<   "\tO X O X O" <<   "\t\tO X X X O" <<   "\t\tX O O O X\n\n";
+    cout <<   "    X O O O X" <<   "\t    O O O O O" <<   "\t    O O O O O\n";
+    cout <<   "    O X O X O" <<   "\t    O X X X O" <<   "\t    X O O O X\n\n";
 
     cout << "(10)O X O X O\t" <<"(11)O O O O O\t" <<"(12)O X O X O\n";
-    cout <<   "\tX O X O X" <<   "\t\tO X O X O" <<   "\t\tO O O O O\n";
-    cout <<   "\tO O O O O" <<   "\t\tX O X O X" <<   "\t\tX O X O X\n\n";
+    cout <<   "    X O X O X" <<   "\t    O X O X O" <<   "\t    O O O O O\n";
+    cout <<   "    O O O O O" <<   "\t    X O X O X" <<   "\t    X O X O X\n\n";
 
     cout << "(13)X O X O X\t" <<"(14)O O O O O\t" <<"(15)X O X O X\n";
-    cout <<   "\tO X O X O" <<   "\t\tX O X O X" <<   "\t\tO O O O O\n";
-    cout <<   "\tO O O O O" <<   "\t\tO X O X O" <<   "\t\tO X O X O\n\n";
+    cout <<   "    O X O X O" <<   "\t    X O X O X" <<   "\t    O O O O O\n";
+    cout <<   "    O O O O O" <<   "\t    O X O X O" <<   "\t    O X O X O\n\n";
 
     cout << "--------------------Rate---------------------\n\n";
-    cout << "-\6-\t\t\t\t"<<"-\3-\t\t\t\t"<<"-\4-\n";
-    cout << "5 - ฿20.00\t\t"<<"5 - ฿12.50\t\t"<<"5 - ฿7.50\n";
-    cout << "4 - ฿5.00\t\t"<<"4 - ฿3.75\t\t"<<"4 - ฿2.00\n";
-    cout << "3 - ฿1.50\t\t"<<"3 - ฿1.25\t\t"<<"3 - ฿0.75\n\n";
+    cout << "-\6-\t\t\t"<<"-\3-\t\t\t"<<"-\4-\n";
+    cout << "5 - *20.00\t\t"<<"5 - *12.50\t\t"<<"5 - *7.50\n";
+    cout << "4 - *5.00\t\t"<<"4 - *3.75\t\t"<<"4 - *2.00\n";
+    cout << "3 - *1.50\t\t"<<"3 - *1.25\t\t"<<"3 - *0.75\n\n";
 
-    cout << "-A-\t\t\t\t"<<"-K-\t\t\t\t"<<"-Q-\t\t\t\t"<<"-J-\t\t\t\t"<<"-10-\n";
-    cout << "5 - ฿1.50\t\t"<<"5 - ฿1.50\t\t"<<"5 - ฿1.00\t\t"<<"5 - ฿1.00\t\t"<<"5 - ฿1.00\n";
-    cout << "4 - ฿0.30\t\t"<<"4 - ฿0.30\t\t"<<"4 - ฿0.25\t\t"<<"4 - ฿0.25\t\t"<<"4 - ฿0.25\n";
-    cout << "3 - ฿0.15\t\t"<<"3 - ฿0.15\t\t"<<"3 - ฿0.10\t\t"<<"3 - ฿0.10\t\t"<<"3 - ฿0.10\n\n";
+    cout << "-A-\t\t\t"<<"-K-\t\t\t"<<"-Q-\t\t\t"<<"-J-\t\t\t"<<"-10-\n";
+    cout << "5 - *1.50\t\t"<<"5 - *1.50\t\t"<<"5 - *1.00\t\t"<<"5 - *1.00\t\t"<<"5 - *1.00\n";
+    cout << "4 - *0.30\t\t"<<"4 - *0.30\t\t"<<"4 - *0.25\t\t"<<"4 - *0.25\t\t"<<"4 - *0.25\n";
+    cout << "3 - *0.15\t\t"<<"3 - *0.15\t\t"<<"3 - *0.10\t\t"<<"3 - *0.10\t\t"<<"3 - *0.10\n\n";
 
     cout << "--------------------Rule---------------------\n";
     cout << "1.You will win if 3 or more similar symbol laying\nsame with the patern of payline.\n";
