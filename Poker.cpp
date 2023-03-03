@@ -4,6 +4,7 @@
 #include <ctime>
 #include <cstdlib>
 #include <random>
+#include <string>
 
 using namespace std;
 
@@ -27,13 +28,13 @@ vector<Card> create_deck(){
 }
 
 //shuffle deck ทั้งกอง
-void shuffle_deck(vector<Card>& deck) {
+/*void shuffle_deck(vector<Card>& deck) {
     random_device rd;
     mt19937 g(rd()); //ลองไปศึกษาดู ส่วนตัวอย่างนี้สะดวกกว่า
     shuffle(deck.begin(), deck.end(), g);
-}
+}*/
 
-/* กันไว้เผื่ออยากใช้ตัวนี้แทน มันใช่ได้จริงแต่มีสิทธิ์ที่จะสุ่ม i=j เสมออยู่
+// กันไว้เผื่ออยากใช้ตัวนี้แทน มันใช่ได้จริงแต่มีสิทธิ์ที่จะสุ่ม i=j เสมออยู่
 void shuffle_deck(vector<Card>& deck) {
     srand(time(nullptr));
     int n = deck.size();
@@ -42,7 +43,7 @@ void shuffle_deck(vector<Card>& deck) {
         swap(deck[i], deck[j]);
     }
 }
-*/
+
 
 //ฟังก์ชั่นโชว์การ์ด
 void Show_Community_Card(string R, vector<Card>& deck) {
@@ -106,6 +107,17 @@ void Choose(int& chip, int& all_bet,vector<Card> dealer_hand) {
     } while (choose != 'F' && choose != 'C' && choose != 'A');
 }
 
+/*void insertionSort(vector<Card> hand){
+	int i, j,ref;
+    int N = hand.size();
+	for(i = 1; i < N; i++){
+		ref = atof(hand[i].rank);
+		j = i - 1;
+		for(; j >= 0 && hand.rank[j] < ref; j--) hand.rank[j+1] = hand.rank[j];
+		hand.rank[j+1] = ref;
+	}
+}*/
+
 //ตามชื่อฟังก์ขั่น
 void Check_Winer(int& chip, int& all_bet, int winner) {
     if (winner == 1) {
@@ -120,16 +132,26 @@ void Check_Winer(int& chip, int& all_bet, int winner) {
 //ฟังก์ชั่นตรวจสอบรูปแบบของcard ตอนนี้พังๆอยู่
 string CheckCard(vector<Card> hand){
     string result;
-    //sort(hand.begin(),hand.end());
     bool flush = 0;
     bool insequence = 0;
     bool gotsame = 0;
     bool gotsameii = 0;
     int samecount = 0;
     int samecountii = 0;
+    int suitremb[7];
+    int suitcount = 0;
+    char suit[7];
+    /*sort(hand.begin(),hand.end());
     for(int i = 0; i < hand.size(); i++){
-        if(hand[i].suit == hand[i+1].suit && hand[i+1].suit == hand[i+2].suit && hand[i+2].suit == hand[i+3].suit && hand[i+3].suit == hand[i+4].suit) flush = 1;
+        string key = hand[i].suit;
+        for(int j = 0; j<hand.size();j++){
+            if(key == hand[j].suit && i != j){
+                suitremb[suitcount] = j;
+                suitcount++;
+            }
+        }
     }
+    if(suitcount >= 5)flush = 1;
     for(int i = 0;i<hand.size();i++){
         string key = hand[i].rank;
         int remb;
@@ -148,7 +170,7 @@ string CheckCard(vector<Card> hand){
                 if(gotsameii == 1)samecountii++;
             }
         }
-    }
+    }*/
     if(flush){
         bool A = 0,K = 0, Q = 0, J = 0, T = 0;
         for(int i = 0; i < hand.size(); i++){
@@ -158,40 +180,31 @@ string CheckCard(vector<Card> hand){
             if(hand[i].rank == "J") J = 1;
             if(hand[i].rank == "10") T = 1;
         }
-        if(A && K && Q && J && T) result = "Royal Flush";
-        return result;
+        if(A && K && Q && J && T) return "Royal Flush";
     }
     if(insequence && flush){
-        result = "Straight Flush";
-        return result;
+        return "Straight Flush";
     }
     if(samecount == 3){
-        result = "Four of a kind";
-        return result;
+        return "Four of a kind";
     }
     if(samecount == 2 && samecountii == 1){
-        result = "Full House";
-        return result;
+        return "Full House";
     }
     if(flush){
-        result = "Flush";
-        return result;
+        return "Flush";
     }
     if(insequence){
-        result = "Straight";
-        return result;
+        return "Straight";
     }
     if(samecount == 2){
-        result = "Three of a kind";
-        return result;
+        return "Three of a kind";
     }
     if(samecount == 1 && samecountii == 1){
-        result = "Two Pair";
-        return result;
+        return "Two Pair";
     }
     if(samecount == 1){
-        result = "One Pair";
-        return result;
+        return "One Pair";
     }
     else{
         result = "High Card";
@@ -240,6 +253,9 @@ int main(){
         dealer_hand.push_back(deck.back());
         deck.pop_back();
     }
+
+    //cout << CheckCard(dealer_hand) << endl;
+    //cout << CheckCard(player_hand) << endl;
 
 
     //ฉะนั้น_ฟังค์ชั่นเงื่อนไขกับจบ_เพื่อน_ฝากที_ราตรีสวัสดิ์!!!
