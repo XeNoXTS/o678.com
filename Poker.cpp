@@ -107,19 +107,8 @@ void Choose(int& chip, int& all_bet,vector<Card> dealer_hand) {
     } while (choose != 'F' && choose != 'C' && choose != 'A');
 }
 
-/*void insertionSort(vector<Card> hand){
-	int i, j,ref;
-    int N = hand.size();
-	for(i = 1; i < N; i++){
-		ref = atof(hand[i].rank);
-		j = i - 1;
-		for(; j >= 0 && hand.rank[j] < ref; j--) hand.rank[j+1] = hand.rank[j];
-		hand.rank[j+1] = ref;
-	}
-}*/
-
 //ตามชื่อฟังก์ขั่น
-void Check_Winer(int& chip, int& all_bet, int winner) {
+void Show_Winer(int& chip, int& all_bet, int winner) {
     if (winner == 1) {
         chip += all_bet;
         cout << "You won " << all_bet << " chips." << endl;
@@ -127,6 +116,22 @@ void Check_Winer(int& chip, int& all_bet, int winner) {
     else {
         cout << "You loss "<<endl;
     }
+}
+
+void CardSort(int rank[],int suit[]){
+	int i, j;
+	int refR,refS;
+	for(i = 1; i < 7; i++){
+		refR = rank[i];
+        refS = suit[i];
+		j = i - 1;
+		for(; j >= 0 && rank[j] < refR; j--){
+            rank[j+1] = rank[j];
+            suit[j+1] = suit[j];
+        }
+		rank[j+1] = refR;
+        suit[j+1] = refS;
+	}
 }
 
 //ฟังก์ชั่นตรวจสอบรูปแบบของcard ตอนนี้พังๆอยู่
@@ -138,49 +143,51 @@ string CheckCard(vector<Card> hand){
     bool gotsameii = 0;
     int samecount = 0;
     int samecountii = 0;
-    int suitremb[7];
-    int suitcount = 0;
-    char suit[7];
-    /*sort(hand.begin(),hand.end());
-    for(int i = 0; i < hand.size(); i++){
-        string key = hand[i].suit;
-        for(int j = 0; j<hand.size();j++){
-            if(key == hand[j].suit && i != j){
-                suitremb[suitcount] = j;
-                suitcount++;
-            }
-        }
+    int rank[7];
+    int suit[7];
+
+    for(int i = 0;i < 7;i++){
+        if(hand[i].rank == "A") hand[i].rank = "14";
+        if(hand[i].rank == "K") hand[i].rank = "13";
+        if(hand[i].rank == "Q") hand[i].rank = "12";
+        if(hand[i].rank == "J") hand[i].rank = "11";
+        if(hand[i].suit == "\3") hand[i].suit = "4";
+        if(hand[i].suit == "\4") hand[i].suit = "3";
+        if(hand[i].suit == "\5") hand[i].suit = "2";
+        if(hand[i].suit == "\6") hand[i].suit = "1";
     }
-    if(suitcount >= 5)flush = 1;
-    for(int i = 0;i<hand.size();i++){
-        string key = hand[i].rank;
-        int remb;
-        for(int j = 0; j < hand.size();i++){
-            if(key == hand[j].rank && i != j){
-                if(gotsame == 0){
-                    gotsame == 1;
-                    remb = i;
-                    samecount++;
-                }
-                if(gotsame == 1){
-                    if(i == remb)samecount++;
-                }else{
-                    gotsameii = 1;
-                }
-                if(gotsameii == 1)samecountii++;
-            }
-        }
-    }*/
+
+    for(int i = 0;i < 7;i++){
+        rank[i] = stoi(hand[i].rank);
+        suit[i] = stoi(hand[i].suit);
+    }
+
+    CardSort(rank,suit);
+
+    int temp[5];
+    /*for(int i = 0; i < 7;i++){
+        temp[i] = rank[i];
+    }
+    int temp2[5];*/
+    for(int i = 0;i < 7;i++){
+        int j = 0;
+        if(rank[i] == rank[i+1]){
+            temp[j] = rank[i];
+            i++;
+        }else temp[j] = rank[i];
+        j++;
+    }
+    if(temp[0] == temp[0] + 1 && temp[1] == temp[0] + 2 && temp[2] == temp[0] + 3 && temp[3] == temp[0] + 4) insequence = 1;
+
+    for(int i = 0;i < 3;i++){
+        if(suit[i] == suit[i+1] && suit[i+1] == suit[i+2] && suit[i+2] == suit[i+3] && suit[i+3] == suit[i+4]) flush = 1;
+        if(rank[i] == rank[i+1] && rank[i+1] == rank[i+2] && rank[i+2] == rank[i+3] && rank[i+3] == rank[i+4]) insequence = 1;
+    }
+    
     if(flush){
-        bool A = 0,K = 0, Q = 0, J = 0, T = 0;
-        for(int i = 0; i < hand.size(); i++){
-            if(hand[i].rank == "A") A = 1;
-            if(hand[i].rank == "K") K = 1;
-            if(hand[i].rank == "Q") Q = 1;
-            if(hand[i].rank == "J") J = 1;
-            if(hand[i].rank == "10") T = 1;
+        for(int i = 0; i < 3;i++){
+            if(rank[i] == 10 && rank[i+1] == 11 && rank[i+2] == 12 && rank[i+3] == 13 && rank[i+4] == 14) return "Royal Flush";
         }
-        if(A && K && Q && J && T) return "Royal Flush";
     }
     if(insequence && flush){
         return "Straight Flush";
@@ -210,6 +217,33 @@ string CheckCard(vector<Card> hand){
         result = "High Card";
         return result;
     }
+}
+
+void CheckWinner(string PlayerResult, string DealerResult){
+    int PlayerScore = 0, DealerScore = 0;
+    if(PlayerResult == "Royal Flush") PlayerScore = 10;
+    if(PlayerResult == "Straight Flush") PlayerScore = 9;
+    if(PlayerResult == "Four of a kind") PlayerScore = 8;
+    if(PlayerResult == "Full House") PlayerScore = 7;
+    if(PlayerResult == "Flush") PlayerScore = 6;
+    if(PlayerResult == "Straight") PlayerScore = 5;
+    if(PlayerResult == "Three of a kind") PlayerScore = 4;
+    if(PlayerResult == "Two Pair") PlayerScore = 3;
+    if(PlayerResult == "One Pair") PlayerScore = 2;
+    if(PlayerResult == "High Card") PlayerScore = 1;
+    if(DealerResult == "Royal Flush") DealerScore = 10;
+    if(DealerResult == "Straight Flush") DealerScore = 9;
+    if(DealerResult == "Four of a kind") DealerScore = 8;
+    if(DealerResult == "Full House") DealerScore = 7;
+    if(DealerResult == "Flush") DealerScore = 6;
+    if(DealerResult == "Straight") DealerScore = 5;
+    if(DealerResult == "Three of a kind") DealerScore = 4;
+    if(DealerResult == "Two Pair") DealerScore = 3;
+    if(DealerResult == "One Pair") DealerScore = 2;
+    if(DealerResult == "High Card") DealerScore = 1;
+    if(PlayerScore > DealerScore) cout << "Player Win!!" << endl;
+    else if(DealerScore > PlayerScore) cout << "Player Lose!!" << endl;
+    else cout << "Draw" << endl;
 }
 
 int main(){
