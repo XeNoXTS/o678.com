@@ -17,6 +17,7 @@ using namespace sf;
 
 int balance = 500;
 bool betPlaced = false, betBarEnable = true, first = true, gameFinish = false;
+bool betPlacedforP = false;
 int playerNrOfCards, dealerNrOfCards;
 int playerCards, dealerCards;
 textBox bet;
@@ -150,7 +151,7 @@ int main() {
 	Texture t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t18, t19, t20, t21, t22, t23, t24, t25, t17;
 	Texture t26, t27, t28, t29, t30, t31, t32, t33, t34, t35, t36, t37, t38, t39, t40, t41, t42, t43, t44, t45, t46, t47;
 	Texture t48, t49, t50, t51, t52;
-	Texture t53, t54, t55, t56, t57, t58, t59, t60, t61, t62, t63, t64, t65;
+	Texture t53, t54, t55, t56, t57, t58, t59, t60, t61, t62, t63, t64, t65, t66, t67, t68, t69, t70, t71;
 
 	t1.loadFromFile("images/2_of_clubs.png");
 	t2.loadFromFile("images/2_of_diamonds.png");
@@ -226,12 +227,19 @@ int main() {
 	t58.loadFromFile("images/hit.png");
 	t59.loadFromFile("images/stand.png");
 	t60.loadFromFile("images/place.png");
+	t71.loadFromFile("images/place2.png");
+	t66.loadFromFile("images/Call.png");
+	t67.loadFromFile("images/Fold.png");
+	t68.loadFromFile("images/Allin.png");
 
 	t61.loadFromFile("images/10.png");
+	t69.loadFromFile("images/50.png");
 	t62.loadFromFile("images/100.png");
+	t70.loadFromFile("images/500.png");
 	t63.loadFromFile("images/1000.png");
 
 	t64.loadFromFile("images/background1.png");
+
 
 	Sprite cardd;
 
@@ -317,7 +325,19 @@ int main() {
 	StandButton.setPosition(400, 400);
 	Sprite placeButton(t60);
 	placeButton.setPosition(800, 400);
+	Sprite placeButton2(t71);
+	placeButton2.setPosition(800, 400);
 
+	//Chip for PK
+	
+	Sprite bet50(t69);
+	bet50.setPosition(200, 600);
+	
+	Sprite bet500(t70);
+	bet500.setPosition(200, 700);
+	
+
+	//Chip for BJ
 	Sprite bet10(t61);
 	bet10.setPosition(100, 600);
 	Sprite bet100(t62);
@@ -329,12 +349,16 @@ int main() {
 
 	/*
 	Sprite HitButton(t60);
-	Sprite StandButton(t62);
-	Sprite CallButton(t63);
-	Sprite FoldButton(t64);
-
-	Sprite ExitButton(t65);
-	*/
+	Sprite StandButton(t62);*/
+	Sprite CallButton(t66);
+	CallButton.setPosition(700, 400);
+	Sprite FoldButton(t67);
+	FoldButton.setPosition(400, 400);
+	Sprite AllinButton(t68);
+	AllinButton.setPosition(1000,400);
+	//Sprite ExitButton(t65);
+	
+	
 
 	Event e;
 	int gamestate = 0;;
@@ -384,15 +408,25 @@ int main() {
 						if (ExitButton.getGlobalBounds().contains(window.mapPixelToCoords(Mouse::getPosition(window))))
 						{
 							gamestate = 0;
+							bet.betValue = 0;
+							betBarEnable = true;
 
 						}
 						if (bet10.getGlobalBounds().contains(window.mapPixelToCoords(Mouse::getPosition(window))) && betBarEnable == true)
 						{
 							bet.addButton(10);
 						}
+						if (bet50.getGlobalBounds().contains(window.mapPixelToCoords(Mouse::getPosition(window))) && betBarEnable == true)
+						{
+							bet.addButton(50);
+						}
 						if (bet100.getGlobalBounds().contains(window.mapPixelToCoords(Mouse::getPosition(window))) && betBarEnable == true)
 						{
 							bet.addButton(100);
+						}
+						if (bet500.getGlobalBounds().contains(window.mapPixelToCoords(Mouse::getPosition(window))) && betBarEnable == true)
+						{
+							bet.addButton(500);
 						}
 						if (bet1000.getGlobalBounds().contains(window.mapPixelToCoords(Mouse::getPosition(window))) && betBarEnable == true)
 						{
@@ -458,7 +492,18 @@ int main() {
 					}
 					if (gamestate == 2)
 					{
+						if (placeButton2.getGlobalBounds().contains(window.mapPixelToCoords(Mouse::getPosition(window))) && bet.betValue > 0 && bet.betValue <= balance && betPlacedforP == false)
+						{
 
+							betBarEnable = false;
+							betPlacedforP = true;
+							balance -= bet.betValue;
+
+						}
+						if (FoldButton.getGlobalBounds().contains(window.mapPixelToCoords(Mouse::getPosition(window))) && betBarEnable == false)
+						{
+							
+						}
 					}
 					if (gamestate == 3 && betPlaced == 1)
 					{
@@ -487,7 +532,7 @@ int main() {
 			{
 				window.clear();
 				window.draw(placeButton);
-				window.draw(ExitButton);
+				
 				if (betPlaced == false)
 				{
 					window.draw(back);
@@ -500,6 +545,7 @@ int main() {
 					window.draw(StandButton);
 
 				}
+				window.draw(ExitButton);
 				window.draw(bet10);
 				window.draw(bet100);
 				window.draw(bet1000);
@@ -1039,19 +1085,45 @@ int main() {
 
 			if (gamestate == 2)
 			{
-				window.clear();
-				window.draw(StandButton);
+				window.clear(Color::Green);
+				if (betPlacedforP == false)
+				{
+					window.draw(placeButton2);
+				}
+				else
+				{
+					window.draw(CallButton);
+					window.draw(FoldButton);
+					window.draw(AllinButton);
+				}
+
+				string bforP;
+				bforP = "Balance: " + to_string(balance);
+				Text balanceText;
+				Font font;
+				font.loadFromFile("fonts/Arial.ttf");
+				balanceText.setFont(font);
+				balanceText.setOutlineColor(Color::Black);
+				balanceText.setOutlineThickness(2);
+				balanceText.setString(bforP);
+				balanceText.setPosition(30, 300);
+				balanceText.setCharacterSize(45);
+				window.draw(balanceText);
+
+				bet.drawBetBar(window);
+
 				//window.draw(PK_BJ);
-				//window.draw(FoldButton);
-				//window.draw(bet10);
-				//window.draw(bet50);
-				//window.draw(bet100);
-				//window.draw(bet500);
-				//window.draw(bet1000);
+				window.draw(bet10);
+				window.draw(bet50);
+				window.draw(bet100);
+				window.draw(bet500);
+				window.draw(bet1000);
 				//window.draw(BetButton);
 				window.draw(ExitButton);
 				window.display();
 
+
+				
 
 			}
 			if (gamestate == 3)

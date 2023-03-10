@@ -1,0 +1,5 @@
+﻿  Source.cpp
+D:\งาน CMU\Project Y1T2\Project678\Source.cpp(147,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\งาน CMU\Project Y1T2\Project678\Source.cpp(818,24): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\งาน CMU\Project Y1T2\Project678\Source.cpp(1075,24): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  copy_Bj4.vcxproj -> D:\งาน CMU\Project Y1T2\Project678\x64\Debug\o678.com.exe
