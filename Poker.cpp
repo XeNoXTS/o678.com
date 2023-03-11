@@ -94,7 +94,7 @@ void Choose(int& chip, int& all_bet,vector<Card> dealer_hand) {
             cout << "You folded." << endl;
             cout << "Dealer Card :: " << dealer_hand[0].rank << dealer_hand[0].suit << " " << dealer_hand[1].rank << dealer_hand[1].suit << endl;
             cout << "Game over." << endl;
-            exit(0);
+            //exit(0);
         }
         else if (choose == 'C') {//ลงเดิมพันต่อ
             Bet(chip, all_bet);
@@ -265,7 +265,7 @@ int main(){
 
     //preflop_เหมือนรอบ0นั้นแหละ
     cout<<"Your Chip ::" << Chip << endl;
-    cout<<"Your Card :: " << player_hand[0].rank<<player_hand[0].suit << " " << player_hand[1].rank<<player_hand[1].suit << endl;
+    cout<<"Your Card ::" << player_hand[0].rank<<player_hand[0].suit << " " << player_hand[1].rank<<player_hand[1].suit << endl;
     Bet(Chip,All_Bet);
 
     //flop_เหมือนรอบแรกนั้นแหละจะลงเท่าไหร่หรือหมอบ
@@ -288,9 +288,14 @@ int main(){
         deck.pop_back();
     }
 
-    //cout << CheckCard(dealer_hand) << endl;
+    for(int i = 0; i < dealer_hand.size(); i++){
+        cout << "Dealer Card :: " <<  dealer_hand[i].rank << dealer_hand[i].suit << endl;
+    }
+
+    cout << CheckCard(dealer_hand) << endl;
     //cout << CheckCard(player_hand) << endl;
 
+    //CheckWinner(CheckCard(player_hand),CheckCard(dealer_hand));
 
     //ฉะนั้น_ฟังค์ชั่นเงื่อนไขกับจบ_เพื่อน_ฝากที_ราตรีสวัสดิ์!!!
 
