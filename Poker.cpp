@@ -5,6 +5,8 @@
 #include <cstdlib>
 #include <random>
 #include <string>
+#include <set>
+#include <map>
 
 using namespace std;
 
@@ -107,7 +109,7 @@ void Choose(int& chip, int& all_bet,vector<Card> dealer_hand) {
     } while (choose != 'F' && choose != 'C' && choose != 'A');
 }
 
-//ตามชื่อฟังก์ขั่น
+//ตามชื่อฟังก์ขั่น need implementation
 void Show_Winer(int& chip, int& all_bet, int winner) {
     if (winner == 1) {
         chip += all_bet;
@@ -118,33 +120,73 @@ void Show_Winer(int& chip, int& all_bet, int winner) {
     }
 }
 
-void CardSort(int rank[],int suit[]){
-	int i, j;
-	int refR,refS;
-	for(i = 1; i < 7; i++){
-		refR = rank[i];
-        refS = suit[i];
-		j = i - 1;
-		for(; j >= 0 && rank[j] < refR; j--){
-            rank[j+1] = rank[j];
-            suit[j+1] = suit[j];
+//เรียงการ์ด
+void CardSort(vector<int>& rank, vector<int>& suit) {
+    for (int i = 0; i < 6; i++) {
+        int min_idx = i;
+        for (int j = i + 1; j < 7; j++) {
+            if (rank[j] < rank[min_idx] || (rank[j] == rank[min_idx] && suit[j] < suit[min_idx])) {
+                min_idx = j;
+            }
         }
-		rank[j+1] = refR;
-        suit[j+1] = refS;
-	}
+        if (min_idx != i) {
+            swap(rank[i], rank[min_idx]);
+            swap(suit[i], suit[min_idx]);
+        }
+    }
+}
+
+//เอาไว้เช็คว่าการ์ดในมือมีตัวที่มีค่าเรียงกันมั้ย BUG หนักมาก
+bool CheckStraight(vector<int> card) {
+    sort(card.begin(), card.end());
+    for (int i = 0; i <= 2; i++) {
+        int highest = card[i];
+        int count = 1;
+        for (int j = i+1; j < 7; j++) {
+            if (card[j] == highest + 1) {
+                highest = card[j];
+                count++;
+                if (count == 5) {
+                    return true;
+                }
+            }
+            else if (card[j] != highest) {
+                highest = card[j];
+                count = 1;
+            }
+        }
+    }
+    return false;
+}
+
+//code frome Chatgpt เอาไว้ใช้หาตัวซ้ำ
+vector<pair<int, int>> findDuplicateElements(vector<int> arr, int n) {
+    map<int, int> freqMap;
+    for (int i = 0; i < n; i++) {
+        freqMap[arr[i]]++;
+    }
+    vector<pair<int, int>> result;
+    for (auto it = freqMap.begin(); it != freqMap.end(); it++) {
+        if (it->second > 1) {
+            result.push_back(make_pair(it->first, it->second));
+        }
+    }
+    return result;
+}
+
+void swap(int &a, int &b){
+    int temp = a;
+    a = b;
+    b = temp;
 }
 
 //ฟังก์ชั่นตรวจสอบรูปแบบของcard ตอนนี้พังๆอยู่
 string CheckCard(vector<Card> hand){
     string result;
-    bool flush = 0;
-    bool insequence = 0;
-    bool gotsame = 0;
-    bool gotsameii = 0;
-    int samecount = 0;
-    int samecountii = 0;
-    int rank[7];
-    int suit[7];
+    bool flush = 0, straight = 0;
+    int samecount = 0,samecountii = 0;
+    vector<int> rank, suit;
+    vector<pair<int, int>> dup;
 
     for(int i = 0;i < 7;i++){
         if(hand[i].rank == "A") hand[i].rank = "14";
@@ -158,30 +200,28 @@ string CheckCard(vector<Card> hand){
     }
 
     for(int i = 0;i < 7;i++){
-        rank[i] = stoi(hand[i].rank);
-        suit[i] = stoi(hand[i].suit);
+        rank.push_back(stoi(hand[i].rank));
+        suit.push_back(stoi(hand[i].suit));
     }
 
     CardSort(rank,suit);
 
-    int temp[5];
-    /*for(int i = 0; i < 7;i++){
-        temp[i] = rank[i];
+    if(CheckStraight(rank)) straight = 1;
+
+    int n = sizeof(rank) / sizeof(rank[0]);
+    dup = findDuplicateElements(rank,n);
+    if(dup.size() != 0){
+        for(int i = dup.size();i > 1;i--){
+            for(int j = 0;j < dup.size() - 1;j++){
+                if(dup[i].second < dup[i+1].second) swap(dup[i],dup[i+1]);
+            }
+        }        
     }
-    int temp2[5];*/
-    for(int i = 0;i < 7;i++){
-        int j = 0;
-        if(rank[i] == rank[i+1]){
-            temp[j] = rank[i];
-            i++;
-        }else temp[j] = rank[i];
-        j++;
-    }
-    if(temp[0] == temp[0] + 1 && temp[1] == temp[0] + 2 && temp[2] == temp[0] + 3 && temp[3] == temp[0] + 4) insequence = 1;
+    samecount = dup[0].second;
+    samecountii = dup[1].second;
 
     for(int i = 0;i < 3;i++){
         if(suit[i] == suit[i+1] && suit[i+1] == suit[i+2] && suit[i+2] == suit[i+3] && suit[i+3] == suit[i+4]) flush = 1;
-        if(rank[i] == rank[i+1] && rank[i+1] == rank[i+2] && rank[i+2] == rank[i+3] && rank[i+3] == rank[i+4]) insequence = 1;
     }
     
     if(flush){
@@ -189,7 +229,7 @@ string CheckCard(vector<Card> hand){
             if(rank[i] == 10 && rank[i+1] == 11 && rank[i+2] == 12 && rank[i+3] == 13 && rank[i+4] == 14) return "Royal Flush";
         }
     }
-    if(insequence && flush){
+    if(straight && flush){
         return "Straight Flush";
     }
     if(samecount == 3){
@@ -201,7 +241,7 @@ string CheckCard(vector<Card> hand){
     if(flush){
         return "Flush";
     }
-    if(insequence){
+    if(straight){
         return "Straight";
     }
     if(samecount == 2){
@@ -214,8 +254,7 @@ string CheckCard(vector<Card> hand){
         return "One Pair";
     }
     else{
-        result = "High Card";
-        return result;
+        return "High Card"; 
     }
 }
 
@@ -288,8 +327,8 @@ int main(){
         deck.pop_back();
     }
 
-    //cout << CheckCard(dealer_hand) << endl;
-    //cout << CheckCard(player_hand) << endl;
+    cout << "Dealer got " << CheckCard(dealer_hand) << endl;
+    cout << "Player got " << CheckCard(player_hand) << endl;
 
 
     //ฉะนั้น_ฟังค์ชั่นเงื่อนไขกับจบ_เพื่อน_ฝากที_ราตรีสวัสดิ์!!!
