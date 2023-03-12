@@ -1,4 +1,4 @@
-#include <SFML/Graphics.hpp>
+﻿#include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <iostream>
 #include <cstdlib>
@@ -141,6 +141,83 @@ void Gamefinish()
 		first = true;
 		gameFinish = false;
 	}
+}
+
+void showslot(RenderWindow& window, slotmac& mac) {//https://en.sfml-dev.org/forums/index.php?topic=9453.0 ได้วิธีมาจากนี่
+
+	Texture s10, sj, sq, sk, sa, scat, sbruh, sdog;
+	s10.loadFromFile("slot_im/10.png");
+	sj.loadFromFile("slot_im/j.png");
+	sq.loadFromFile("slot_im/q.png");
+	sk.loadFromFile("slot_im/k.png");
+	sa.loadFromFile("slot_im/a.png");
+	scat.loadFromFile("slot_im/cat.png");
+	sdog.loadFromFile("slot_im/dog.png");
+	sbruh.loadFromFile("slot_im/bruh.png");
+
+	Sprite sym10(s10), symj(sj), symq(sq), symk(sk), syma(sa), symcat(scat), symdog(sdog), symbruh(sbruh);
+	sym10.scale(0.8, 0.8);
+	symj.scale(0.8, 0.8);
+	symq.scale(0.8, 0.8);
+	symk.scale(0.8, 0.8);
+	syma.scale(0.8, 0.8);
+	symcat.scale(0.8, 0.8);
+	symdog.scale(0.8, 0.8);
+	symbruh.scale(0.8, 0.8);
+	int xpos = 0, ypos = 50;
+	S_row{
+		xpos = 350;
+		S_col{
+			switch (mac.sym[row][col]) {
+			case 1:
+				sym10.setPosition(xpos, ypos);
+				xpos += 240;
+				window.draw(sym10);
+				break;
+			case 2:
+				symj.setPosition(xpos, ypos);
+				xpos += 240;
+				window.draw(symj);
+				break;
+			case 3:
+				symq.setPosition(xpos, ypos);
+				xpos += 240;
+				window.draw(symq);
+				break;
+			case 4:
+				symk.setPosition(xpos, ypos);
+				xpos += 240;
+				window.draw(symk);
+				break;
+			case 5:
+				syma.setPosition(xpos, ypos);
+				xpos += 240;
+				window.draw(syma);
+				break;
+			case 6:
+				symbruh.setPosition(xpos, ypos);
+				xpos += 240;
+				window.draw(symbruh);
+				break;
+			case 7:
+				symcat.setPosition(xpos, ypos);
+				xpos += 240;
+				window.draw(symcat);
+				break;
+			case 8:
+				symdog.setPosition(xpos, ypos);
+				xpos += 240;
+				window.draw(symdog);
+				break;
+			default:
+
+				break;
+
+			}
+		}
+		ypos += 270;
+	}
+
 }
 
 int main() {
@@ -358,7 +435,14 @@ int main() {
 	AllinButton.setPosition(1000,400);
 	//Sprite ExitButton(t65);
 	
-	
+	//Slot texture/sprite
+	Texture spin_but;
+	spin_but.loadFromFile("slot_im/spin.png");
+	Sprite spin(spin_but);
+	spin.scale(0.35f, 0.35f);
+	spin.setPosition(25, 30);
+	slotmac slot;
+	bool checkran = 0;
 
 	Event e;
 	int gamestate = 0;;
@@ -505,9 +589,19 @@ int main() {
 							
 						}
 					}
-					if (gamestate == 3 && betPlaced == 1)
+					if (gamestate == 3)
 					{
+						if (spin.getGlobalBounds().contains(window.mapPixelToCoords(Mouse::getPosition(window))) && bet.betValue > 0)
+						{
 
+							if (balance - bet.betValue >= 0) {
+								betBarEnable = 0;
+								balance -= bet.betValue;
+								slot.randslot();
+								checkran = 1;
+							}
+							else bet.betValue = 0;
+						}
 					}
 
 
@@ -1128,18 +1222,73 @@ int main() {
 			}
 			if (gamestate == 3)
 			{
-				window.clear();
-				window.draw(HitButton);
-				//window.draw(PK_BJ);
-				//window.draw(FoldButton);
-				//window.draw(bet10);
-				//window.draw(bet50);
-				//window.draw(bet100);
-				//window.draw(bet500);
-				//window.draw(bet1000);
-				//window.draw(BetButton);
+				window.clear(Color::Cyan);
 				window.draw(ExitButton);
+				window.draw(spin);
+				window.draw(bet10);
+				window.draw(bet50);
+				window.draw(bet100);
+				window.draw(bet500);
+				window.draw(bet1000);
+
+				string bforS;
+
+				Text balanceText;
+				Font font;
+				bforS = "Balance: " + to_string(balance);
+				font.loadFromFile("fonts/Arial.ttf");
+				balanceText.setFont(font);
+				balanceText.setOutlineColor(Color::Black);
+				balanceText.setOutlineThickness(2);
+				balanceText.setString(bforS);
+				balanceText.setPosition(30, 300);
+				balanceText.setCharacterSize(45);
+
+				window.draw(balanceText);
+				bet.drawBetBar(window);
 				window.display();
+
+				if (checkran) {
+					window.clear(Color::Cyan);
+					window.draw(ExitButton);
+					window.draw(spin);
+					window.draw(bet10);
+					window.draw(bet50);
+					window.draw(bet100);
+					window.draw(bet500);
+					window.draw(bet1000);
+					bforS = "Balance: " + to_string(balance);
+					balanceText.setString(bforS);
+					window.draw(balanceText);
+					bet.drawBetBar(window);
+
+					checkran = 0;
+					showslot(window, slot);
+
+					window.display();
+					slot.checkwin();
+					balance += bet.betValue * slot.C_multi;
+					//cout << balance;
+					//cout << slot.C_multi;
+					sleep(seconds(2));
+
+					window.clear(Color::Cyan);
+					window.draw(ExitButton);
+					window.draw(spin);
+					window.draw(bet10);
+					window.draw(bet50);
+					window.draw(bet100);
+					window.draw(bet500);
+					window.draw(bet1000);
+					bforS = "Balance: " + to_string(balance);
+					balanceText.setString(bforS);
+					window.draw(balanceText);
+					bet.drawBetBar(window);
+					slot.C_multi = 0;
+					bet.betValue = 0;
+					betBarEnable = 1;
+
+				}
 			}
 
 
