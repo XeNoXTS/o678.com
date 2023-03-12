@@ -46,19 +46,23 @@ void shuffle_deck(vector<Card>& deck) {
     }
 }
 
+//ประกาศ Global เพื่อให้ function เอาไปใช้ได้โดยไม่ต้อง input
+vector<Card> player_hand;
+vector<Card> dealer_hand;
 
 //ฟังก์ชั่นโชว์การ์ด
 void Show_Community_Card(string R, vector<Card>& deck) {
     int n = deck.size();
+    cout << "------------------------------------------------------------\n";
     cout << "Community Card " ;
     if (R == "flop") {
         for (int i = 0; i < 3; i++) {
-            cout<< deck[n - i - 1].rank << deck[n - i - 1].suit << " ";
+            cout << deck[n - i - 1].rank << deck[n - i - 1].suit << " ";
         }
     }
     else if (R == "turn") {
         for (int i = 0; i < 4; i++) {
-            cout<< deck[n - i - 1].rank << deck[n - i - 1].suit << " ";
+            cout << deck[n - i - 1].rank << deck[n - i - 1].suit << " ";
         }
     }
     else {
@@ -66,7 +70,7 @@ void Show_Community_Card(string R, vector<Card>& deck) {
             cout<< deck[n - i - 1].rank << deck[n - i - 1].suit << " ";
         }
     }
-    cout << endl;
+    cout << "\n------------------------------------------------------------\n";
 }
 
 //ฟังก์ชั่นคำนวณchipที่ลงเดิมพัน
@@ -94,17 +98,22 @@ void Choose(int& chip, int& all_bet,vector<Card> dealer_hand) {
         cin >> choose;
         if (choose == 'F') {//หมอบ_แต่เล่น2คนก็เหมือนจบเกม
             cout << "You folded." << endl;
+            cout << "------------------------------------------------------------\n";
             cout << "Dealer Card :: " << dealer_hand[0].rank << dealer_hand[0].suit << " " << dealer_hand[1].rank << dealer_hand[1].suit << endl;
+            cout << "------------------------------------------------------------\n";
             cout << "Game over." << endl;
+            cout << "------------------------------------------------------------\n";
             exit(0);
         }
         else if (choose == 'C') {//ลงเดิมพันต่อ
             Bet(chip, all_bet);
+            cout << "------------------------------------------------------------\n";
         }
         else if (choose == 'A') {//หมดหน้าตัก
             all_bet += 2 * chip;
             chip = 0;
             cout << "You are all in." << endl;
+            cout << "------------------------------------------------------------\n";
         }
     } while (choose != 'F' && choose != 'C' && choose != 'A');
 }
@@ -136,6 +145,51 @@ void CardSort(vector<int>& rank, vector<int>& suit) {
     }
 }
 
+bool compareCards(const Card& card1, const Card& card2) {
+    // Convert rank strings to integer values for comparison
+    int rankValue1 = 0, rankValue2 = 0;
+    if (card1.rank == "A") {
+        rankValue1 = 14;
+    } else if (card1.rank == "K") {
+        rankValue1 = 13;
+    } else if (card1.rank == "Q") {
+        rankValue1 = 12;
+    } else if (card1.rank == "J") {
+        rankValue1 = 11;
+    } else {
+        rankValue1 = std::stoi(card1.rank);
+    }
+    if (card2.rank == "A") {
+        rankValue2 = 14;
+    } else if (card2.rank == "K") {
+        rankValue2 = 13;
+    } else if (card2.rank == "Q") {
+        rankValue2 = 12;
+    } else if (card2.rank == "J") {
+        rankValue2 = 11;
+    } else {
+        rankValue2 = std::stoi(card2.rank);
+    }
+
+    // Group together cards with the same rank
+    if (rankValue1 == rankValue2) {
+        // Sort cards by suit in descending order
+        if (card1.suit == "\3" && card2.suit != "\3") {
+            return false;
+        } else if (card1.suit == "\4" && (card2.suit != "\3" && card2.suit != "\4")) {
+            return false;
+        } else if (card1.suit == "\5" && (card2.suit == "\6" || (card2.rank == "A" && card2.suit == "\5"))) {
+            return false;
+        } else if (card1.suit == "\6" && (card2.rank == "A" && card2.suit == "\6")) {
+            return false;
+        }
+        return true;
+    }
+
+    // Compare rank values in descending order
+    return rankValue1 > rankValue2;
+}
+
 //เอาไว้เช็คว่าการ์ดในมือมีตัวที่มีค่าเรียงกันมั้ย BUG หนักมาก
 bool CheckStraight(vector<int> card) {
     sort(card.begin(), card.end());
@@ -159,7 +213,17 @@ bool CheckStraight(vector<int> card) {
     return false;
 }
 
-//code frome Chatgpt เอาไว้ใช้หาตัวซ้ำ
+bool CheckFlush(vector<int> suit){
+    for(int i = 0;i < 3;i++){
+        if(suit[i] == suit[i+1] && suit[i+1] == suit[i+2] && suit[i+2] == suit[i+3] && suit[i+3] == suit[i+4]) return 1;
+    }
+    return 0;
+}
+
+bool sortByFrequency(const pair<int, int>& a, const pair<int, int>& b) {
+    return a.second > b.second;
+}
+
 vector<pair<int, int>> findDuplicateElements(vector<int> arr, int n) {
     map<int, int> freqMap;
     for (int i = 0; i < n; i++) {
@@ -171,6 +235,7 @@ vector<pair<int, int>> findDuplicateElements(vector<int> arr, int n) {
             result.push_back(make_pair(it->first, it->second));
         }
     }
+    sort(result.begin(), result.end(), sortByFrequency);
     return result;
 }
 
@@ -180,19 +245,24 @@ void swap(int &a, int &b){
     b = temp;
 }
 
-//ฟังก์ชั่นตรวจสอบรูปแบบของcard ตอนนี้พังๆอยู่
-string CheckCard(vector<Card> hand){
-    string result;
-    bool flush = 0, straight = 0;
-    int samecount = 0,samecountii = 0;
-    vector<int> rank, suit;
-    vector<pair<int, int>> dup;
-
+vector<int> rankconverterstoi(vector<Card> hand){
+    vector<int> rank;
     for(int i = 0;i < 7;i++){
         if(hand[i].rank == "A") hand[i].rank = "14";
         if(hand[i].rank == "K") hand[i].rank = "13";
         if(hand[i].rank == "Q") hand[i].rank = "12";
         if(hand[i].rank == "J") hand[i].rank = "11";
+    }
+
+    for(int i = 0;i < 7;i++){
+        rank.push_back(stoi(hand[i].rank));
+    }
+    return rank;
+}
+
+vector<int> suitconverterstoi(vector<Card> hand){
+    vector<int> suit;
+    for(int i = 0;i < 7;i++){
         if(hand[i].suit == "\3") hand[i].suit = "4";
         if(hand[i].suit == "\4") hand[i].suit = "3";
         if(hand[i].suit == "\5") hand[i].suit = "2";
@@ -200,66 +270,81 @@ string CheckCard(vector<Card> hand){
     }
 
     for(int i = 0;i < 7;i++){
-        rank.push_back(stoi(hand[i].rank));
         suit.push_back(stoi(hand[i].suit));
     }
+    return suit;
+}
+
+
+//ฟังก์ชั่นตรวจสอบรูปแบบของcard ตอนนี้พังๆอยู่
+string CheckCard(vector<Card> hand){
+    string result;
+    bool flush = 0, straight = 0;
+    int samecount = 0,samecountii = 0;
+    vector<int> rank = rankconverterstoi(hand), suit = suitconverterstoi(hand);
 
     CardSort(rank,suit);
 
-    if(CheckStraight(rank)) straight = 1;
+    straight = CheckStraight(rank);
+    flush = CheckFlush(suit);
 
-    int n = sizeof(rank) / sizeof(rank[0]);
-    dup = findDuplicateElements(rank,n);
-    if(dup.size() != 0){
-        for(int i = dup.size();i > 1;i--){
-            for(int j = 0;j < dup.size() - 1;j++){
-                if(dup[i].second < dup[i+1].second) swap(dup[i],dup[i+1]);
-            }
-        }        
-    }
-    samecount = dup[0].second;
-    samecountii = dup[1].second;
-
+    vector<pair<int, int>> dup = findDuplicateElements(rank,rank.size());
+    if(dup.size() >= 1){
+        if(dup.size() > 1){
+            samecount = dup[0].second;
+            samecountii = dup[1].second;
+        }else{
+            samecount = dup[0].second;
+        }
+    }    
     for(int i = 0;i < 3;i++){
         if(suit[i] == suit[i+1] && suit[i+1] == suit[i+2] && suit[i+2] == suit[i+3] && suit[i+3] == suit[i+4]) flush = 1;
     }
-    
-    if(flush){
+    if(flush && straight){
         for(int i = 0; i < 3;i++){
             if(rank[i] == 10 && rank[i+1] == 11 && rank[i+2] == 12 && rank[i+3] == 13 && rank[i+4] == 14) return "Royal Flush";
         }
-    }
-    if(straight && flush){
         return "Straight Flush";
     }
-    if(samecount == 3){
-        return "Four of a kind";
+    if(samecount == 4) return "Four of a kind";
+    if(samecount == 3 && samecountii == 2) return "Full House";
+    if(flush) return "Flush";
+    if(straight) return "Straight";
+    if(samecount == 3) return "Three of a kind";
+    if(samecount == 2 && samecountii == 2) return "Two Pair";
+    if(samecount == 2) return "One Pair";
+    if(flush == 0 && straight == 0 && samecount == 0 && samecountii == 0) return "High Card";
+    return "Error Occured";
+}
+
+int findLargest(vector<int> v) {
+    int largest = v[0];
+    for (int i = 1; i < v.size(); i++) {
+        if (v[i] > largest) {
+            largest = v[i];
+        }
     }
-    if(samecount == 2 && samecountii == 1){
-        return "Full House";
-    }
-    if(flush){
-        return "Flush";
-    }
-    if(straight){
-        return "Straight";
-    }
-    if(samecount == 2){
-        return "Three of a kind";
-    }
-    if(samecount == 1 && samecountii == 1){
-        return "Two Pair";
-    }
-    if(samecount == 1){
-        return "One Pair";
-    }
-    else{
-        return "High Card"; 
-    }
+    return largest;
+}
+
+string CheckEqual(string outcome){
+    sort(player_hand.begin(),player_hand.end(),compareCards);
+
+    if(outcome == "Royal Flush");
+    if(outcome == "Straight Flush");
+    if(outcome == "Four of a kind");
+    if(outcome == "Full House");
+    if(outcome == "Flush");
+    if(outcome == "Straight");
+    if(outcome == "Three of a kind");
+    if(outcome == "Two Pair");
+    if(outcome == "One Pair");
+    if(outcome == "High Card");
 }
 
 void CheckWinner(string PlayerResult, string DealerResult){
     int PlayerScore = 0, DealerScore = 0;
+    string result;
     if(PlayerResult == "Royal Flush") PlayerScore = 10;
     if(PlayerResult == "Straight Flush") PlayerScore = 9;
     if(PlayerResult == "Four of a kind") PlayerScore = 8;
@@ -280,9 +365,17 @@ void CheckWinner(string PlayerResult, string DealerResult){
     if(DealerResult == "Two Pair") DealerScore = 3;
     if(DealerResult == "One Pair") DealerScore = 2;
     if(DealerResult == "High Card") DealerScore = 1;
-    if(PlayerScore > DealerScore) cout << "Player Win!!" << endl;
-    else if(DealerScore > PlayerScore) cout << "Player Lose!!" << endl;
-    else cout << "Draw" << endl;
+    if(PlayerScore > DealerScore) result = "Player Win!!";
+    else if(PlayerScore < DealerScore) result = "Player Lose!!";
+    else if(PlayerScore == DealerScore){
+        result = "Unfinished Code";
+        /*result = PlayerResult;
+        result = CheckEqual(result);*/
+    }
+    else result = "Error";
+    cout << "------------------------------------------------------------\n";
+    cout << "\t\t\t" << result << endl;
+    cout << "------------------------------------------------------------\n";
 }
 
 int main(){
@@ -290,9 +383,6 @@ int main(){
     int Chip=500,All_Bet=0;
     vector<Card> deck = create_deck();
     shuffle_deck(deck);
-
-    vector<Card> player_hand;
-    vector<Card> dealer_hand;
 
     //จั่วการ์ด
     for(int i=0;i<2;i++){
@@ -303,8 +393,11 @@ int main(){
     }
 
     //preflop_เหมือนรอบ0นั้นแหละ
-    cout<<"Your Chip ::" << Chip << endl;
+    cout << "------------------------------------------------------------\n";
+    cout<<"Your Chip :: " << Chip << endl;
     cout<<"Your Card :: " << player_hand[0].rank<<player_hand[0].suit << " " << player_hand[1].rank<<player_hand[1].suit << endl;
+    cout << "------------------------------------------------------------\n";
+
     Bet(Chip,All_Bet);
 
     //flop_เหมือนรอบแรกนั้นแหละจะลงเท่าไหร่หรือหมอบ
@@ -327,11 +420,24 @@ int main(){
         deck.pop_back();
     }
 
-    cout << "Dealer got " << CheckCard(dealer_hand) << endl;
+    cout << "Player actual card :: ";
+    for(int i = 0;i < 7;i++){
+        cout << player_hand[i].rank << player_hand[i].suit << ' ';
+    }
+    cout << endl;
+    cout << "Deal actual card :: ";
+    for(int i = 0;i < 7;i++){
+        cout << dealer_hand[i].rank << dealer_hand[i].suit << ' ';
+    }
+    cout << endl;
+    cout << "------------------------------------------------------------\n";
     cout << "Player got " << CheckCard(player_hand) << endl;
+    cout << "------------------------------------------------------------\n";
+    cout << "Dealer got " << CheckCard(dealer_hand) << endl;
+    cout << "------------------------------------------------------------\n";
 
+    CheckWinner(CheckCard(player_hand), CheckCard(dealer_hand));
 
-    //ฉะนั้น_ฟังค์ชั่นเงื่อนไขกับจบ_เพื่อน_ฝากที_ราตรีสวัสดิ์!!!
 
     return 0;
 }
