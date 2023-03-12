@@ -1,11 +1,12 @@
 ﻿  Source.cpp
 D:\งาน CMU\Project Y1T2\Project678\Source.cpp(46,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
 D:\งาน CMU\Project Y1T2\Project678\Source.cpp(47,21): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\งาน CMU\Project Y1T2\Project678\Source.cpp(189,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-D:\งาน CMU\Project Y1T2\Project678\Source.cpp(894,24): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\งาน CMU\Project Y1T2\Project678\Source.cpp(1151,24): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\งาน CMU\Project Y1T2\Project678\Source.cpp(1424,28): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\งาน CMU\Project Y1T2\Project678\Source.cpp(1678,28): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\งาน CMU\Project Y1T2\Project678\Source.cpp(1932,28): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\งาน CMU\Project Y1T2\Project678\Source.cpp(2185,28): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\งาน CMU\Project Y1T2\Project678\Source.cpp(202,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\งาน CMU\Project Y1T2\Project678\Source.cpp(922,24): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\งาน CMU\Project Y1T2\Project678\Source.cpp(1179,24): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\งาน CMU\Project Y1T2\Project678\Source.cpp(1453,28): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\งาน CMU\Project Y1T2\Project678\Source.cpp(1708,28): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\งาน CMU\Project Y1T2\Project678\Source.cpp(1963,28): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\งาน CMU\Project Y1T2\Project678\Source.cpp(2217,28): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\งาน CMU\Project Y1T2\Project678\Source.cpp(2471,28): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   copy_Bj4.vcxproj -> D:\งาน CMU\Project Y1T2\Project678\x64\Debug\o678.com.exe

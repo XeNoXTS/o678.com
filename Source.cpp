@@ -23,12 +23,12 @@ int playerNrOfCards, dealerNrOfCards;
 int playerCards, dealerCards;
 textBox bet;
 
+
+//Poker --------------------------------------------------------------------------------------------
 struct Card {
 	string rank;
 	string suit;
 };
-
-//Poker --------------------------------------------------------------------------------------------
 
 vector<Card> create_deck() {
 	vector<Card> deck;
@@ -58,6 +58,19 @@ void Drawcard(vector<Card> &player_hand, vector<Card> &dealer_hand, vector<Card>
 		dealer_hand.push_back(deck.back());
 		deck.pop_back();
 	}
+}
+
+void showcard(vector<Card> hand) {
+	for (int i = 0; i < hand.size(); i++) {
+		cout << hand[i].rank << hand[i].suit << " " ;
+	}
+	cout << endl;
+}
+
+void PokerFinish(vector<Card> player_hand, vector<Card> dealer_hand, const vector<Card>commu_hand) {
+	for (int i = 0; i < commu_hand.size(); i++) player_hand.push_back(commu_hand[i]); // put commu card to player_hand
+	for (int i = 0; i < commu_hand.size(); i++) dealer_hand.push_back(commu_hand[i]); // put commu card to dealer_hand
+	//CheckWinner(CheckCard(player_hand),CheckCard(dealer_hand));
 }
 
 vector<Card> player_hand;
@@ -407,12 +420,8 @@ int main() {
 	shuffle_deck(deck);
 
 	int commu = 3;
-
-	//draw for commu
-	for (int i = 0; i < 5; i++) {
-		commu_hand.push_back(deck.back());
-		deck.pop_back();
-	}
+	bool fold = false; bool foldbet = false;
+	bool Allin = false; bool allinbet = false;
 	
 	//----------------------------------------------------------------------------
 
@@ -554,31 +563,50 @@ int main() {
 							betBarEnable = false;
 							betPlacedforP = true;
 							balance -= bet.betValue;
+							//draw for player dealer 
 							Drawcard(player_hand, dealer_hand, deck);
-
-						}
-						if (FoldButton.getGlobalBounds().contains(window.mapPixelToCoords(Mouse::getPosition(window))) && betBarEnable == false)
-						{
-							
-						}
-
-						if (CallButton.getGlobalBounds().contains(window.mapPixelToCoords(Mouse::getPosition(window)))) //&& betBarEnable == false)
-						{	
-							if (commu <= 4) {
-								if (betBarEnable) {
-									betBarEnable = false;
-									balance -= bet.betValue;
-									commu++;
-								}
-							else betBarEnable = true;
-								
+							//draw for commu
+							for (int i = 0; i < 5; i++) {
+								commu_hand.push_back(deck.back());
+								deck.pop_back();
 							}
+							showcard(player_hand);
+							showcard(dealer_hand);
+							showcard(commu_hand);
+
+						}
+						if (FoldButton.getGlobalBounds().contains(window.mapPixelToCoords(Mouse::getPosition(window))) && betBarEnable == false && Allin == false)
+						{
+							fold = true;
+							if (!foldbet) {
+								balance += bet.betValue / 2;
+								foldbet = true;
+							}
+							PokerFinish(player_hand,dealer_hand,commu_hand);
+						}
+
+						if (CallButton.getGlobalBounds().contains(window.mapPixelToCoords(Mouse::getPosition(window))) && fold == false && Allin == false) 
+						{	
+							if (commu <= 4 && betBarEnable && bet.betValue != 0) {
+								betBarEnable = false;
+								balance -= bet.betValue;
+								commu++;
+							}else {
+									betBarEnable = true;
+									bet.betValue = 0;
+							}
+							if (commu == 5) {
+								PokerFinish(player_hand, dealer_hand, commu_hand);
+							}
+						
 						}
 						
-
-						if (AllinButton.getGlobalBounds().contains(window.mapPixelToCoords(Mouse::getPosition(window))) && betBarEnable == false)
+						if (AllinButton.getGlobalBounds().contains(window.mapPixelToCoords(Mouse::getPosition(window))) && betBarEnable == false && fold == false)
 						{
-
+							Allin = true;
+							bet.betValue = balance;
+							balance -= bet.betValue;
+							PokerFinish(player_hand, dealer_hand, commu_hand);
 						}
 					}
 					if (gamestate == 3 && betPlaced == 1)
@@ -1171,6 +1199,7 @@ int main() {
 					window.draw(CallButton);
 					window.draw(FoldButton);
 					window.draw(AllinButton);
+					//show player card
 					int position = 300;
 					for (int i = 0; i < player_hand.size(); i++)
 					{
@@ -1425,6 +1454,7 @@ int main() {
 						position += 260;
 						window.draw(cardforp);
 					}
+					//show dealer card
 					position = 300;
 					for (int i = 0; i < dealer_hand.size(); i++)
 					{
@@ -1679,6 +1709,7 @@ int main() {
 						position += 260;
 						window.draw(cardforp);
 					}
+					//show commu card
 					position = 350;
 					for (int i = 0; i < commu_hand.size()-2; i++)
 					{
@@ -1933,7 +1964,262 @@ int main() {
 						position += 260;
 						window.draw(cardforp);
 					}
+					//show for Call
 					if(commu == 4 || commu == 5) for (int i = 3; i < commu; i++)
+					{
+						if (commu_hand[i].rank == "A")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = ace_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = ace_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = ace_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = ace_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "2")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = two_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = two_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = two_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = two_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "3")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = three_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = three_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = three_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = three_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "4")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = four_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = four_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = four_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = four_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "5")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = five_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = five_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = five_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = five_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "6")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = six_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = six_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = six_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = six_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "7")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = seven_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = seven_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = seven_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = seven_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "8")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = eight_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = eight_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = eight_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = eight_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "9")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = nine_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = nine_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = nine_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = nine_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "10")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = ten_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = ten_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = ten_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = ten_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "J")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = jack_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = jack_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = jack_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = jack_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "Q")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = queen_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = queen_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = queen_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = queen_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "K")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = king_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = king_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = king_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = king_of_spades;
+							}
+						}
+						cardforp.setPosition(position, 350);
+						position += 260;
+						window.draw(cardforp);
+					}
+					//show for allin, fold
+					if (fold == true || Allin == true) for (int i = commu; i < 5; i++)
 					{
 						if (commu_hand[i].rank == "A")
 						{
@@ -2195,7 +2481,7 @@ int main() {
 				window.draw(bet500);
 				window.draw(bet1000);
 
-
+				// Balance :
 				string bforP;
 				bforP = "Balance: " + to_string(balance);
 				Text balanceText;
@@ -2208,12 +2494,9 @@ int main() {
 				balanceText.setPosition(30, 300);
 				balanceText.setCharacterSize(45);
 				window.draw(balanceText);
-				
+				// Bet Value :
 				bet.drawBetBar(window);
 				window.display();
-
-				
-
 
 			}
 			if (gamestate == 3)
