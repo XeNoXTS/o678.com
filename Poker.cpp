@@ -19,7 +19,7 @@ struct Card{
 vector<Card> create_deck(){
     vector<Card> deck;
     string suits[] = {"\3", "\4", "\5", "\6"};
-    string ranks[] = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
+    string ranks[] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
     for (string suit : suits) {
         for (string rank : ranks) {
             deck.push_back({rank, suit});
@@ -156,7 +156,7 @@ bool compareCards(const Card& card1, const Card& card2) {
     } else if (card1.rank == "J") {
         rankValue1 = 11;
     } else {
-        rankValue1 = std::stoi(card1.rank);
+        rankValue1 = stoi(card1.rank);
     }
     if (card2.rank == "A") {
         rankValue2 = 14;
@@ -167,7 +167,7 @@ bool compareCards(const Card& card1, const Card& card2) {
     } else if (card2.rank == "J") {
         rankValue2 = 11;
     } else {
-        rankValue2 = std::stoi(card2.rank);
+        rankValue2 = stoi(card2.rank);
     }
 
     // Group together cards with the same rank
@@ -189,7 +189,7 @@ bool compareCards(const Card& card1, const Card& card2) {
     return rankValue1 > rankValue2;
 }
 
-//เอาไว้เช็คว่าการ์ดในมือมีตัวที่มีค่าเรียงกันมั้ย BUG หนักมาก
+//เอาไว้เช็คว่าการ์ดในมือมีตัวที่มีค่าเรียงกันมั้ย
 bool CheckStraight(vector<int> card) {
     sort(card.begin(), card.end());
     for (int i = 0; i <= 2; i++) {
@@ -223,6 +223,7 @@ bool sortByFrequency(const pair<int, int>& a, const pair<int, int>& b) {
     return a.second > b.second;
 }
 
+//find the duplicate element with its frequency
 vector<pair<int, int>> findDuplicateElements(vector<int> arr, int n) {
     map<int, int> freqMap;
     for (int i = 0; i < n; i++) {
@@ -244,6 +245,7 @@ void swap(int &a, int &b){
     b = temp;
 }
 
+//Convert vector<card> to vector<int> of rank
 vector<int> rankconverterstoi(vector<Card> hand){
     vector<int> rank;
     for(int i = 0;i < 7;i++){
@@ -259,6 +261,7 @@ vector<int> rankconverterstoi(vector<Card> hand){
     return rank;
 }
 
+//Convert vector<card> to vector<int> of suit
 vector<int> suitconverterstoi(vector<Card> hand){
     vector<int> suit;
     for(int i = 0;i < 7;i++){
@@ -274,7 +277,8 @@ vector<int> suitconverterstoi(vector<Card> hand){
     return suit;
 }
 
-int findLargest(vector<int> v) {
+//find the largest value [Not Used]
+/*int findLargest(vector<int> v) {
     int largest = v[0];
     for (int i = 1; i < v.size(); i++) {
         if (v[i] > largest) {
@@ -282,8 +286,9 @@ int findLargest(vector<int> v) {
         }
     }
     return largest;
-}
+}*/
 
+//Function for finding duplicate element location
 void findElementLoc(vector<Card> hand,vector<int> &Loc, int key){
     for(int i = 0;i < hand.size();i++){
         if(hand[i].rank == "A") hand[i].rank = "14";
@@ -306,11 +311,14 @@ string CheckCard(vector<Card> hand){
     int samecount = 0,samecountii = 0;
     vector<int> rank = rankconverterstoi(hand), suit = suitconverterstoi(hand);
 
+    //sort Card
     CardSort(rank,suit);
 
+    //Check for potential Straight or Flush
     straight = CheckStraight(rank);
     flush = CheckFlush(suit);
 
+    //find the duplicate element
     vector<pair<int, int>> dup = findDuplicateElements(rank,rank.size());
     if(dup.size() >= 1){
         if(dup.size() > 1){
@@ -319,10 +327,9 @@ string CheckCard(vector<Card> hand){
         }else{
             samecount = dup[0].second;
         }
-    }    
-    for(int i = 0;i < 3;i++){
-        if(suit[i] == suit[i+1] && suit[i+1] == suit[i+2] && suit[i+2] == suit[i+3] && suit[i+3] == suit[i+4]) flush = 1;
-    }
+    }   
+
+    //ทำการตรวจค่าและ return
     if(flush && straight){
         for(int i = 0; i < 3;i++){
             if(rank[i] == 10 && rank[i+1] == 11 && rank[i+2] == 12 && rank[i+3] == 13 && rank[i+4] == 14) return "Royal Flush";
@@ -342,122 +349,207 @@ string CheckCard(vector<Card> hand){
 
 
 string CheckEqual(string outcome){
+    //เรียงการ์ด
     sort(player_hand.begin(),player_hand.end(),compareCards);
-    for(int i = 0;i < player_hand.size();i++){
-        cout << player_hand[i].rank << player_hand[i].suit << ' ';
-    }
-    cout << endl;
     sort(dealer_hand.begin(),dealer_hand.end(),compareCards);
-    for(int i = 0;i < dealer_hand.size();i++){
-        cout << dealer_hand[i].rank << dealer_hand[i].suit << ' ';
-    }
-    cout << endl;
+    
+    //ทำ vector ไว้แปลงค่าจาก struck ไปเป็น int เอาไว้ตรวจสอบ
     vector<int> player_rank = rankconverterstoi(player_hand);
     vector<int> dealer_rank = rankconverterstoi(dealer_hand);
 
-    vector<pair<int,int>> player_dup = findDuplicateElements(player_rank,player_rank.size());
-    vector<pair<int,int>> dealer_dup = findDuplicateElements(dealer_rank,dealer_rank.size());
-    //ไว้ดูค่า dup ของ
-    /*cout << player_dup.size() << endl;
-    for (int i = 0; i < player_dup.size(); i++) {
-        cout << "Element " << player_dup[i].first << " has frequency " << player_dup[i].second << endl;
-    }
-    cout << dealer_dup.size() << endl;
-    for (int i = 0; i < dealer_dup.size(); i++) {
-        cout << "Element " << dealer_dup[i].first << " has frequency " << dealer_dup[i].second << endl;
-    }*/
-    vector<int> player_Loc;
-    vector<int> dealer_Loc;
-
-    //เอาค่าของตัวที่มีตัวซ้ำไปหาตำแหน่งของค่านั้นทั้งหมดที่อยู่ใน vector
-    for(int i = 0;i < player_dup.size();i++){
-        findElementLoc(player_hand,player_Loc,player_dup[i].first);
-    }
-    for(int i = 0;i < dealer_dup.size();i++){
-        findElementLoc(dealer_hand,dealer_Loc,dealer_dup[i].first);
-    }
-    //เอาไว้ cout ดูค่า Loc 
-    sort(player_Loc.begin(),player_Loc.end());
-    sort(dealer_Loc.begin(),dealer_Loc.end());
-    cout << "Player stored Loc\n"; //ตรวจค่าใน Vector Loc
-    for(int i = 0;i < player_Loc.size();i++){
-        cout << player_Loc[i] << ' ';
-    }
-    cout << endl;
-    cout << "Dealer stored Loc\n";
-    for(int i = 0;i < dealer_Loc.size();i++){
-        cout << dealer_Loc[i] << ' ';
-    }
-    cout << endl;
-    //erase element ที่อยู่ใน dup แล้ว
-    for(int i = 0;i < player_Loc.size();i++){
-        int idx = player_Loc[i] - i;
-        player_hand.erase(player_hand.begin() + idx);
-    }
-    for(int i = 0;i < dealer_Loc.size();i++){
-        int idx = dealer_Loc[i] - i;
-        dealer_hand.erase(dealer_hand.begin() + idx);
-    }
-    cout << "Player erased hand :: ";
+    //ตรวจการ์ดที่เรียงแล้ว
+    cout << "Player sorted hand :: ";
     for(int i = 0;i < player_hand.size();i++){
         cout << player_hand[i].rank << player_hand[i].suit << ' ';
     }
     cout << endl;
-    cout << "Dealer erased hand :: ";
+    cout << "Dealer sorted hand :: ";
     for(int i = 0;i < dealer_hand.size();i++){
         cout << dealer_hand[i].rank << dealer_hand[i].suit << ' ';
     }
     cout << endl;
+    if(outcome == "Royal Flush" || outcome == "Straight Flush" || outcome == "Flush" || outcome == "Straight"){
+        vector<int> player_suit = suitconverterstoi(player_hand);
+        vector<int> dealer_suit = suitconverterstoi(dealer_hand);
+
+        //ทำการตรวจสอบเงื่อนไขและ return ค่า
+        if(outcome == "Royal Flush") return "Tie"; //ตามกติกาแล้ว Royal Flush จะเสมอกันเท่านั้น ลำดับความสูลต่ำของsuitที่ได้ไม่มีผลต่อการตัดสิน
+        if(outcome == "Straight Flush") return "Unfinished Code"; 
+        if(outcome == "Flush"){
+            vector<pair<int,int>> player_flush_element = findDuplicateElements(player_suit,player_suit.size());
+            vector<pair<int,int>> dealer_flush_element = findDuplicateElements(dealer_suit,dealer_suit.size());
+            vector<Card> player_drop_out, dealer_drop_out;
+            for(int i=0;i<player_hand.size();i++){
+                if(player_suit[i] != player_flush_element[0].first){
+                    player_drop_out.push_back(player_hand[i]);
+                    player_hand.erase(player_hand.begin()+i);
+                    i--;
+                }
+                
+            }
+            for(int i=0;i<dealer_hand.size();i++){
+                if(dealer_suit[i] != dealer_flush_element[0].first){
+                    dealer_drop_out.push_back(dealer_hand[i]);
+                    dealer_hand.erase(dealer_hand.begin()+i);
+                    i--;
+                }
+            }
+            if(stoi(player_hand[0].rank) > stoi(dealer_hand[0].rank)) return "You Win!!";
+            else if(stoi(player_hand[0].rank) == stoi(dealer_hand[0].rank)){
+                for(int i=1;i<player_hand.size();i++){
+                    if(stoi(player_hand[i].rank) > stoi(dealer_hand[i].rank)) return "You Win!!";
+                }
+                for(int i=0;i<player_drop_out.size();i++){
+                    if(stoi(player_drop_out[i].rank) > stoi(dealer_drop_out[i].rank)) return "You Win!!"; 
+                }
+            }
+            else return "You Lose!!";
+        }
+        if(outcome == "Straight"){
+            vector<Card> player_straight, dealer_straight, player_drop_out, dealer_drop_out;
+            for(int i=0;i<player_straight.size()-1 && player_straight.size() >= 5;i++){
+                if(player_rank[i] != player_rank[i+1]+1){
+                    if(i > 1) player_rank.erase(player_rank.begin()+i+1);
+                    else player_rank.erase(player_rank.begin()+i);
+                    i--;
+                }
+            }
+            for(int i=0;i<dealer_straight.size()-1 && dealer_straight.size() >= 5;i++){
+                if(dealer_rank[i] != dealer_rank[i+1]+1){
+                    if(i > 1) dealer_rank.erase(dealer_rank.begin()+i+1);
+                    else dealer_rank.erase(dealer_rank.begin()+i);
+                    i--;
+                }
+            }
+            if(player_rank[0] > dealer_rank[0]) return "You Win!!";
+            else if(player_rank[0] == dealer_rank[0]) return "Tie";
+            else return "You Lose!!";
+        }
+    }else{
+
+        //หาการ์ดเหมือน
+        vector<pair<int,int>> player_dup = findDuplicateElements(player_rank,player_rank.size());
+        vector<pair<int,int>> dealer_dup = findDuplicateElements(dealer_rank,dealer_rank.size());
+
+        //ไว้ดูค่า dup ของ vector For Testing Only
+        /*cout << player_dup.size() << endl;
+        for (int i = 0; i < player_dup.size(); i++) {
+            cout << "Element " << player_dup[i].first << " has frequency " << player_dup[i].second << endl;
+        }
+        cout << dealer_dup.size() << endl;
+        for (int i = 0; i < dealer_dup.size(); i++) {
+            cout << "Element " << dealer_dup[i].first << " has frequency " << dealer_dup[i].second << endl;
+        }*/
+
+        vector<int> player_Loc;
+        vector<int> dealer_Loc;
+
+        //เอาค่าของตัวที่มีตัวซ้ำไปหาตำแหน่งของค่านั้นทั้งหมดที่อยู่ใน vector
+        for(int i = 0;i < player_dup.size();i++){
+            findElementLoc(player_hand,player_Loc,player_dup[i].first);
+        }
+        for(int i = 0;i < dealer_dup.size();i++){
+            findElementLoc(dealer_hand,dealer_Loc,dealer_dup[i].first);
+        }
+
+        //เอาไว้ cout ดูค่า Loc For Testing Only
+        /*sort(player_Loc.begin(),player_Loc.end());
+        sort(dealer_Loc.begin(),dealer_Loc.end());
+        cout << "Player stored Loc\n"; //ตรวจค่าใน Vector Loc
+        for(int i = 0;i < player_Loc.size();i++){
+            cout << player_Loc[i] << ' ';
+        }
+        cout << endl;
+        cout << "Dealer stored Loc\n";
+        for(int i = 0;i < dealer_Loc.size();i++){
+            cout << dealer_Loc[i] << ' ';
+        }
+        cout << endl;*/
+
+        //erase element ที่อยู่ใน dup แล้ว
+        for(int i = 0;i < player_Loc.size();i++){
+            int idx = player_Loc[i] - i;
+            player_hand.erase(player_hand.begin() + idx);
+        }
+        for(int i = 0;i < dealer_Loc.size();i++){
+            int idx = dealer_Loc[i] - i;
+            dealer_hand.erase(dealer_hand.begin() + idx);
+        }
+
+        //แสดงกองการ์ดที่ เอาการ์ดใบเหมือนออกแล้ว For Testing Only
+        cout << "Player erased hand :: ";
+        for(int i = 0;i < player_hand.size();i++){
+            cout << player_hand[i].rank << player_hand[i].suit << ' ';
+        }
+        cout << endl;
+        cout << "Dealer erased hand :: ";
+        for(int i = 0;i < dealer_hand.size();i++){
+            cout << dealer_hand[i].rank << dealer_hand[i].suit << ' ';
+        }
+        cout << endl;
+
+        //ให้การ์ดที่มีค่ามากที่สุดของแต่ละคนเป็นการ์ด Kicker โดย ของทั้งสองคนต้องไม่เท่ากัน(ไม่ใช่จาก community card)
+        Card player_kicker, dealer_kicker;
+        int j = 0;
+        do{
+            player_kicker = player_hand[j];
+            dealer_kicker = dealer_hand[j];
+            j++;
+        }while(player_kicker.rank == dealer_kicker.rank && player_kicker.suit == dealer_kicker.suit);
+
+        //Show Kicker card For Testing Only
+        cout << "Player Kicker :: " << player_kicker.rank << player_kicker.suit << endl;
+        cout << "Dealer Kicker :: " << dealer_kicker.rank << dealer_kicker.suit << endl;
     
-    Card player_kicker, dealer_kicker;
-    int j = 0;
-    do{
-        player_kicker = player_hand[j];
-        dealer_kicker = dealer_hand[j];
-        j++;
-    }while(player_kicker.rank == dealer_kicker.rank && player_kicker.suit == dealer_kicker.suit);
-    //Show Kicker card
-    cout << "Player Kicker :: " << player_kicker.rank << player_kicker.suit << endl;
-    cout << "Dealer Kicker :: " << dealer_kicker.rank << dealer_kicker.suit << endl;
-    
-    if(outcome == "Royal Flush") return "Unfinished Code"; 
-    if(outcome == "Straight Flush") return "Unfinished Code"; 
-    if(outcome == "Four of a kind") return "Unfinished Code"; 
-    if(outcome == "Full House") return "Unfinished Code"; 
-    if(outcome == "Flush") return "Unfinished Code"; 
-    if(outcome == "Straight") return "Unfinished Code"; 
-    if(outcome == "Three of a kind"){
-        if(player_dup[0].first > dealer_dup[0].first) return "Player Win!!";
-        else if(player_dup[0].first == dealer_dup[0].first){
-            if(player_kicker.rank > dealer_kicker.rank) return "Player Win!!";
-        else return "Player Lose!!";
-        } else return "Player Lose!!";
-    }
-    if(outcome == "Two Pair"){
-        if(player_dup[0].first > dealer_dup[0].first) return "Player Win!!";
-        else if(player_dup[0].first < dealer_dup[0].first) return "Player Lose!!";
-        else if(player_dup[0].first == dealer_dup[0].first){
-            if(player_dup[1].first > dealer_dup[1].first) return "Player Win!!";
-            else if(player_dup[1].first < dealer_dup[1].first) return "Player Lose!!";
-            else if(player_dup[1].first == dealer_dup[1].first){
-                if(player_kicker.rank > dealer_kicker.rank) return "Player Win!!";
-                else return "Player Lose!!";
+        //เริ่มทำการตรวจสอบเงื่อนไขและทำการ return
+        if(outcome == "Four of a kind"){
+            if(player_dup[0].first > dealer_dup[0].first) return "You Win!!";
+            else if(player_dup[0].first == dealer_dup[0].first){
+                if(player_kicker.rank > dealer_kicker.rank) return "You Win!!";
+                else return "You Lose!!";
+            } else return "You Lose!!";
+        }
+        if(outcome == "Full House"){
+            if(player_dup[0].first > dealer_dup[0].first) return "You Win!!";
+            else if(player_dup[0].first == dealer_dup[0].first){
+                if(player_kicker.rank > dealer_kicker.rank) return "You Win!!";
+            else return "You Lose!!";
+            } else return "You Lose!!";
+        }
+        if(outcome == "Three of a kind"){
+            if(player_dup[0].first > dealer_dup[0].first) return "You Win!!";
+            else if(player_dup[0].first == dealer_dup[0].first){
+                if(player_kicker.rank > dealer_kicker.rank) return "You Win!!";
+            else return "You Lose!!";
+            } else return "You Lose!!";
+        }
+        if(outcome == "Two Pair"){
+            if(player_dup[0].first > dealer_dup[0].first) return "You Win!!";
+            else if(player_dup[0].first < dealer_dup[0].first) return "You Lose!!";
+            else if(player_dup[0].first == dealer_dup[0].first){
+                if(player_dup[1].first > dealer_dup[1].first) return "You Win!!";
+                else if(player_dup[1].first < dealer_dup[1].first) return "You Lose!!";
+                else if(player_dup[1].first == dealer_dup[1].first){
+                    if(player_kicker.rank > dealer_kicker.rank) return "You Win!!";
+                    else return "You Lose!!";
+                }
             }
         }
-    }
-    if(outcome == "One Pair"){
-        if(player_dup[0].first > dealer_dup[0].first) return "Player Win!!";
-        else if(player_dup[0].first == dealer_dup[0].first){
-            if(player_kicker.rank > dealer_kicker.rank) return "Player Win!!";
-        else return "Player Lose!!";
-        } else return "Player Lose!!";
-    }
-    if(outcome == "High Card"){
-        if(player_kicker.rank > dealer_kicker.rank) return "Player Win!!";
-        else return "Player Lose!!";
-    }
+        if(outcome == "One Pair"){
+            if(player_dup[0].first > dealer_dup[0].first) return "You Win!!";
+            else if(player_dup[0].first == dealer_dup[0].first){
+                if(player_kicker.rank > dealer_kicker.rank) return "You Win!!";
+            else return "You Lose!!";
+            } else return "You Lose!!";
+        }
+        if(outcome == "High Card"){
+            if(player_kicker.rank > dealer_kicker.rank) return "You Win!!";
+            else return "You Lose!!";
+        }
+    }    
 }
 
+//เอา Pattern ของการ์ดมาShowdownกัน โดยสร้างค่าให้เรียงตามความสูงต่ำตามกติกาสากล
 void CheckWinner(string PlayerResult, string DealerResult){
     int PlayerScore = 0, DealerScore = 0;
     string result;
@@ -481,8 +573,8 @@ void CheckWinner(string PlayerResult, string DealerResult){
     if(DealerResult == "Two Pair") DealerScore = 3;
     if(DealerResult == "One Pair") DealerScore = 2;
     if(DealerResult == "High Card") DealerScore = 1;
-    if(PlayerScore > DealerScore) result = "Player Win!!";
-    else if(PlayerScore < DealerScore) result = "Player Lose!!";
+    if(PlayerScore > DealerScore) result = "You Win!!";
+    else if(PlayerScore < DealerScore) result = "You Lose!!";
     else if(PlayerScore == DealerScore){
         result = CheckEqual(PlayerResult);
     }
@@ -539,7 +631,7 @@ int main(){
         cout << player_hand[i].rank << player_hand[i].suit << ' ';
     }
     cout << endl;
-    cout << "Deal actual card :: ";
+    cout << "Dealer actual card :: ";
     for(int i = 0;i < 7;i++){
         cout << dealer_hand[i].rank << dealer_hand[i].suit << ' ';
     }
