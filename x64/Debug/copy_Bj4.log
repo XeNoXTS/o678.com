@@ -1,5 +1,13 @@
 ﻿  Source.cpp
-D:\งาน CMU\Project Y1T2\Project678\Source.cpp(147,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-D:\งาน CMU\Project Y1T2\Project678\Source.cpp(818,24): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\งาน CMU\Project Y1T2\Project678\Source.cpp(1075,24): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  copy_Bj4.vcxproj -> D:\งาน CMU\Project Y1T2\Project678\x64\Debug\o678.com.exe
+D:\งาน CMU\Project Y1T2\o678latest\Source.cpp(46,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\งาน CMU\Project Y1T2\o678latest\Source.cpp(47,21): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\งาน CMU\Project Y1T2\o678latest\Source.cpp(202,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\งาน CMU\Project Y1T2\o678latest\Source.cpp(923,24): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\งาน CMU\Project Y1T2\o678latest\Source.cpp(1180,24): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\งาน CMU\Project Y1T2\o678latest\Source.cpp(1454,28): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\งาน CMU\Project Y1T2\o678latest\Source.cpp(1709,28): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\งาน CMU\Project Y1T2\o678latest\Source.cpp(1964,28): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\งาน CMU\Project Y1T2\o678latest\Source.cpp(2218,28): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\งาน CMU\Project Y1T2\o678latest\Source.cpp(2472,28): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  LINK : D:\งาน CMU\Project Y1T2\o678latest\x64\Debug\o678.com.exe not found or not built by the last incremental link; performing full link
+  copy_Bj4.vcxproj -> D:\งาน CMU\Project Y1T2\o678latest\x64\Debug\o678.com.exe
