@@ -261,25 +261,25 @@ if (count > 2) mutiplier(count);
     void  mutiplier(int N) {//หาค่าตัวคูณหลังจากเช็คว่าชนะไหมเสร็จ
         switch (N) {
         case 3:
-            if (key == 8 && C_multi < 1.5) C_multi = 1.5; //spade
-            if (key == 7 && C_multi < 1.25) C_multi = 1.25; //heart
-            if (key == 6 && C_multi < 0.75) C_multi = 0.75; //diamond
-            if ((key == 5 || key == 4) && C_multi < 0.15) C_multi = 0.15; //A,K
-            if ((key == 3 || key == 2 || key == 1) && C_multi < 0.1) C_multi = 0.1; //Q,J,10
+            if (key == 8 /* && C_multi < 1.5*/) C_multi += 1.5; //spade
+            if (key == 7 /* && C_multi < 1.25*/) C_multi += 1.25; //heart
+            if (key == 6 /* && C_multi < 0.75*/) C_multi += 0.75; //diamond
+            if ((key == 5 || key == 4) /* && C_multi < 0.15*/) C_multi += 0.15; //A,K
+            if ((key == 3 || key == 2 || key == 1) /* && C_multi < 0.1*/) C_multi += 0.1; //Q,J,10
             break;
         case 4:
-            if (key == 8 && C_multi < 5) C_multi = 5;
-            if (key == 7 && C_multi < 3.75) C_multi = 3.75;
-            if (key == 6 && C_multi < 2) C_multi = 2;
-            if ((key == 5 || key == 4) && C_multi < 0.3) C_multi = 0.3;
-            if ((key == 3 || key == 2 || key == 1) && C_multi < 0.25) C_multi = 0.25;
+            if (key == 8 /* && C_multi < 5*/) C_multi += 5;
+            if (key == 7 /* && C_multi < 3.75*/) C_multi += 3.75;
+            if (key == 6 /* && C_multi < 2*/) C_multi += 2;
+            if ((key == 5 || key == 4) /* && C_multi < 0.3*/) C_multi += 0.3;
+            if ((key == 3 || key == 2 || key == 1) /* && C_multi < 0.25*/) C_multi += 0.25;
             break;
         case 5:
-            if (key == 8 && C_multi < 20) C_multi = 20;
-            if (key == 7 && C_multi < 12.5) C_multi = 12.5;
-            if (key == 6 && C_multi < 7.5) C_multi = 7.5;
-            if ((key == 5 || key == 4) && C_multi < 1.5) C_multi = 1.5;
-            if ((key == 3 || key == 2 || key == 1) && C_multi < 1) C_multi = 1;
+            if (key == 8 /* && C_multi < 20*/) C_multi += 20;
+            if (key == 7 /* && C_multi < 12.5 */ ) C_multi += 12.5;
+            if (key == 6 /* && C_multi < 7.5*/) C_multi += 7.5;
+            if ((key == 5 || key == 4) /* && C_multi < 1.5 */ ) C_multi += 1.5;
+            if ((key == 3 || key == 2 || key == 1) /* && C_multi < 1*/) C_multi += 1;
             break;
         default:
             break;
