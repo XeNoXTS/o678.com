@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <chrono>
+#include <random>
 #include "Black_jack.h"
 #include "Poker.h"
 #include "slot.h"
@@ -23,12 +24,147 @@ int playerCards, dealerCards;
 textBox bet;
 
 
+//Poker --------------------------------------------------------------------------------------------
+struct Card {
+	string rank;
+	string suit;
+};
+
+vector<Card> create_deck() {
+	vector<Card> deck;
+	string suits[] = { "\3", "\4", "\5", "\6" };
+	string ranks[] = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
+	for (string suit : suits) {
+		for (string rank : ranks) {
+			deck.push_back({ rank, suit });
+		}
+	}
+	return deck;
+}
+
+void shuffle_deck(vector<Card>& deck) {
+	srand(time(nullptr));
+	int n = deck.size();
+	for (int i = n - 1; i > 0; i--) {
+		int j = rand() % (i + 1);
+		swap(deck[i], deck[j]);
+	}
+}
+
+void Drawcard(vector<Card>& player_hand, vector<Card>& dealer_hand, vector<Card>& deck) {
+	for (int i = 0; i < 2; i++) {
+		player_hand.push_back(deck.back());
+		deck.pop_back();
+		dealer_hand.push_back(deck.back());
+		deck.pop_back();
+	}
+}
+
+void showcard(vector<Card> hand) {
+	for (int i = 0; i < hand.size(); i++) {
+		cout << hand[i].rank << hand[i].suit << " ";
+	}
+	cout << endl;
+}
+
+void PokerFinish(vector<Card> player_hand, vector<Card> dealer_hand, const vector<Card>commu_hand) {
+	for (int i = 0; i < commu_hand.size(); i++) player_hand.push_back(commu_hand[i]); // put commu card to player_hand
+	for (int i = 0; i < commu_hand.size(); i++) dealer_hand.push_back(commu_hand[i]); // put commu card to dealer_hand
+	//CheckWinner(CheckCard(player_hand),CheckCard(dealer_hand));
+}
+
+vector<Card> player_hand;
+vector<Card> dealer_hand;
+vector<Card> commu_hand;
+
+//----------------------------------------------------------------------------------------------------
+//---------SLOT Func--------
+void showslot(RenderWindow& window, slotmac& mac) {//https://en.sfml-dev.org/forums/index.php?topic=9453.0 ได้วิธีมาจากนี่
+
+	Texture s10, sj, sq, sk, sa, scat, sbruh, sdog;
+	s10.loadFromFile("slot_im/10.png");
+	sj.loadFromFile("slot_im/j.png");
+	sq.loadFromFile("slot_im/q.png");
+	sk.loadFromFile("slot_im/k.png");
+	sa.loadFromFile("slot_im/a.png");
+	scat.loadFromFile("slot_im/cat.png");
+	sdog.loadFromFile("slot_im/dog.png");
+	sbruh.loadFromFile("slot_im/bruh.png");
+
+	Sprite sym10(s10), symj(sj), symq(sq), symk(sk), syma(sa), symcat(scat), symdog(sdog), symbruh(sbruh);
+	sym10.scale(0.8, 0.8);
+	symj.scale(0.8, 0.8);
+	symq.scale(0.8, 0.8);
+	symk.scale(0.8, 0.8);
+	syma.scale(0.8, 0.8);
+	symcat.scale(0.8, 0.8);
+	symdog.scale(0.8, 0.8);
+	symbruh.scale(0.8, 0.8);
+	int xpos = 0, ypos = 50;
+	S_row{
+		xpos = 350;
+		S_col{
+			switch (mac.sym[row][col]) {
+			case 1:
+				sym10.setPosition(xpos, ypos);
+				xpos += 240;
+				window.draw(sym10);
+				break;
+			case 2:
+				symj.setPosition(xpos, ypos);
+				xpos += 240;
+				window.draw(symj);
+				break;
+			case 3:
+				symq.setPosition(xpos, ypos);
+				xpos += 240;
+				window.draw(symq);
+				break;
+			case 4:
+				symk.setPosition(xpos, ypos);
+				xpos += 240;
+				window.draw(symk);
+				break;
+			case 5:
+				syma.setPosition(xpos, ypos);
+				xpos += 240;
+				window.draw(syma);
+				break;
+			case 6:
+				symbruh.setPosition(xpos, ypos);
+				xpos += 240;
+				window.draw(symbruh);
+				break;
+			case 7:
+				symcat.setPosition(xpos, ypos);
+				xpos += 240;
+				window.draw(symcat);
+				break;
+			case 8:
+				symdog.setPosition(xpos, ypos);
+				xpos += 240;
+				window.draw(symdog);
+				break;
+			default:
+				break;
+
+			}
+
+	}
+		ypos += 270;		
+		/*window.display();
+		sleep(seconds(0.2));*/
+	}
+
+}
+
+// BlackJack------------------------------------------------------------------------------------------
+
 struct card
 {
 	int rank;
 	int value;
 };
-
 card player[6], dealer[6];
 
 int randomGenerator()
@@ -36,14 +172,11 @@ int randomGenerator()
 	int v = rand() % 14 + 1;
 	return v;
 }
-
 int randomRank()
 {
 	int r = rand() % 4 + 1;
 	return r;
 }
-
-
 void Hit()
 {
 	if (betPlaced == true && playerCards < 21 && playerNrOfCards < 5)
@@ -63,8 +196,6 @@ void Hit()
 		player[playerNrOfCards].rank = card;
 	}
 }
-
-
 void Blackjack()
 {
 	if (first == true && betPlaced == true)
@@ -143,82 +274,7 @@ void Gamefinish()
 	}
 }
 
-void showslot(RenderWindow& window, slotmac& mac) {//https://en.sfml-dev.org/forums/index.php?topic=9453.0 ได้วิธีมาจากนี่
-
-	Texture s10, sj, sq, sk, sa, scat, sbruh, sdog;
-	s10.loadFromFile("slot_im/10.png");
-	sj.loadFromFile("slot_im/j.png");
-	sq.loadFromFile("slot_im/q.png");
-	sk.loadFromFile("slot_im/k.png");
-	sa.loadFromFile("slot_im/a.png");
-	scat.loadFromFile("slot_im/cat.png");
-	sdog.loadFromFile("slot_im/dog.png");
-	sbruh.loadFromFile("slot_im/bruh.png");
-
-	Sprite sym10(s10), symj(sj), symq(sq), symk(sk), syma(sa), symcat(scat), symdog(sdog), symbruh(sbruh);
-	sym10.scale(0.8, 0.8);
-	symj.scale(0.8, 0.8);
-	symq.scale(0.8, 0.8);
-	symk.scale(0.8, 0.8);
-	syma.scale(0.8, 0.8);
-	symcat.scale(0.8, 0.8);
-	symdog.scale(0.8, 0.8);
-	symbruh.scale(0.8, 0.8);
-	int xpos = 0, ypos = 50;
-	S_row{
-		xpos = 350;
-		S_col{
-			switch (mac.sym[row][col]) {
-			case 1:
-				sym10.setPosition(xpos, ypos);
-				xpos += 240;
-				window.draw(sym10);
-				break;
-			case 2:
-				symj.setPosition(xpos, ypos);
-				xpos += 240;
-				window.draw(symj);
-				break;
-			case 3:
-				symq.setPosition(xpos, ypos);
-				xpos += 240;
-				window.draw(symq);
-				break;
-			case 4:
-				symk.setPosition(xpos, ypos);
-				xpos += 240;
-				window.draw(symk);
-				break;
-			case 5:
-				syma.setPosition(xpos, ypos);
-				xpos += 240;
-				window.draw(syma);
-				break;
-			case 6:
-				symbruh.setPosition(xpos, ypos);
-				xpos += 240;
-				window.draw(symbruh);
-				break;
-			case 7:
-				symcat.setPosition(xpos, ypos);
-				xpos += 240;
-				window.draw(symcat);
-				break;
-			case 8:
-				symdog.setPosition(xpos, ypos);
-				xpos += 240;
-				window.draw(symdog);
-				break;
-			default:
-
-				break;
-
-			}
-		}
-		ypos += 270;
-	}
-
-}
+//----------------------------------------------------------------------------------------------------
 
 int main() {
 	srand(time(0));
@@ -319,6 +375,7 @@ int main() {
 
 
 	Sprite cardd;
+	Sprite cardforp;
 
 	Sprite two_of_clubs(t1);
 	Sprite two_of_diamonds(t2);
@@ -406,13 +463,13 @@ int main() {
 	placeButton2.setPosition(800, 400);
 
 	//Chip for PK
-	
+
 	Sprite bet50(t69);
 	bet50.setPosition(200, 600);
-	
+
 	Sprite bet500(t70);
 	bet500.setPosition(200, 700);
-	
+
 
 	//Chip for BJ
 	Sprite bet10(t61);
@@ -424,17 +481,27 @@ int main() {
 
 	Sprite back(t64);
 
-	/*
-	Sprite HitButton(t60);
-	Sprite StandButton(t62);*/
+
 	Sprite CallButton(t66);
-	CallButton.setPosition(700, 400);
+	CallButton.setPosition(800, 700); //800 700
 	Sprite FoldButton(t67);
-	FoldButton.setPosition(400, 400);
+	FoldButton.setPosition(1000, 700); //1000 700
 	Sprite AllinButton(t68);
-	AllinButton.setPosition(1000,400);
-	//Sprite ExitButton(t65);
-	
+	AllinButton.setPosition(1200, 700);//1200 700
+
+
+	//----------------------------------------------------------------------------
+
+	//Poker Code
+
+	vector<Card> deck = create_deck();
+	shuffle_deck(deck);
+
+	int commu = 3;
+	bool fold = false; bool foldbet = false;
+	bool Allin = false; bool allinbet = false;
+
+	//----------------------------------------------------------------------------
 	//Slot texture/sprite
 	Texture spin_but;
 	spin_but.loadFromFile("slot_im/spin.png");
@@ -582,11 +649,51 @@ int main() {
 							betBarEnable = false;
 							betPlacedforP = true;
 							balance -= bet.betValue;
+							//draw for player dealer 
+							Drawcard(player_hand, dealer_hand, deck);
+							//draw for commu
+							for (int i = 0; i < 5; i++) {
+								commu_hand.push_back(deck.back());
+								deck.pop_back();
+							}
+							showcard(player_hand);
+							showcard(dealer_hand);
+							showcard(commu_hand);
 
 						}
-						if (FoldButton.getGlobalBounds().contains(window.mapPixelToCoords(Mouse::getPosition(window))) && betBarEnable == false)
+						if (FoldButton.getGlobalBounds().contains(window.mapPixelToCoords(Mouse::getPosition(window))) && betBarEnable == false && Allin == false)
 						{
-							
+							fold = true;
+							if (!foldbet) {
+								balance += bet.betValue / 2;
+								foldbet = true;
+							}
+							cout << "You fold END GAME.";
+						}
+
+						if (CallButton.getGlobalBounds().contains(window.mapPixelToCoords(Mouse::getPosition(window))) && fold == false && Allin == false)
+						{
+							if (commu <= 4 && betBarEnable && bet.betValue != 0) {
+								betBarEnable = false;
+								balance -= bet.betValue;
+								commu++;
+							}
+							else {
+								betBarEnable = true;
+								bet.betValue = 0;
+							}
+							if (commu == 5) {
+								PokerFinish(player_hand, dealer_hand, commu_hand);
+							}
+
+						}
+
+						if (AllinButton.getGlobalBounds().contains(window.mapPixelToCoords(Mouse::getPosition(window))) && betBarEnable == false && fold == false)
+						{
+							Allin = true;
+							bet.betValue = balance;
+							balance -= bet.betValue;
+							PokerFinish(player_hand, dealer_hand, commu_hand);
 						}
 					}
 					if (gamestate == 3)
@@ -603,6 +710,7 @@ int main() {
 							else bet.betValue = 0;
 						}
 					}
+
 
 
 				}
@@ -626,7 +734,7 @@ int main() {
 			{
 				window.clear();
 				window.draw(placeButton);
-				
+
 				if (betPlaced == false)
 				{
 					window.draw(back);
@@ -1175,8 +1283,6 @@ int main() {
 
 				Gamefinish();
 			}
-
-
 			if (gamestate == 2)
 			{
 				window.clear(Color::Green);
@@ -1189,8 +1295,1289 @@ int main() {
 					window.draw(CallButton);
 					window.draw(FoldButton);
 					window.draw(AllinButton);
-				}
+					//show player card
+					int position = 300;
+					for (int i = 0; i < player_hand.size(); i++)
+					{
+						if (player_hand[i].rank == "A")
+						{
+							if (player_hand[i].suit == "\5")
+							{
+								cardforp = ace_of_clubs;
+							}
+							if (player_hand[i].suit == "\4")
+							{
+								cardforp = ace_of_diamonds;
+							}
+							if (player_hand[i].suit == "\3")
+							{
+								cardforp = ace_of_hearts;
+							}
+							if (player_hand[i].suit == "\6")
+							{
+								cardforp = ace_of_spades;
+							}
+						}
+						if (player_hand[i].rank == "2")
+						{
+							if (player_hand[i].suit == "\5")
+							{
+								cardforp = two_of_clubs;
+							}
+							if (player_hand[i].suit == "\4")
+							{
+								cardforp = two_of_diamonds;
+							}
+							if (player_hand[i].suit == "\3")
+							{
+								cardforp = two_of_hearts;
+							}
+							if (player_hand[i].suit == "\6")
+							{
+								cardforp = two_of_spades;
+							}
+						}
+						if (player_hand[i].rank == "3")
+						{
+							if (player_hand[i].suit == "\5")
+							{
+								cardforp = three_of_clubs;
+							}
+							if (player_hand[i].suit == "\4")
+							{
+								cardforp = three_of_diamonds;
+							}
+							if (player_hand[i].suit == "\3")
+							{
+								cardforp = three_of_hearts;
+							}
+							if (player_hand[i].suit == "\6")
+							{
+								cardforp = three_of_spades;
+							}
+						}
+						if (player_hand[i].rank == "4")
+						{
+							if (player_hand[i].suit == "\5")
+							{
+								cardforp = four_of_clubs;
+							}
+							if (player_hand[i].suit == "\4")
+							{
+								cardforp = four_of_diamonds;
+							}
+							if (player_hand[i].suit == "\3")
+							{
+								cardforp = four_of_hearts;
+							}
+							if (player_hand[i].suit == "\6")
+							{
+								cardforp = four_of_spades;
+							}
+						}
+						if (player_hand[i].rank == "5")
+						{
+							if (player_hand[i].suit == "\5")
+							{
+								cardforp = five_of_clubs;
+							}
+							if (player_hand[i].suit == "\4")
+							{
+								cardforp = five_of_diamonds;
+							}
+							if (player_hand[i].suit == "\3")
+							{
+								cardforp = five_of_hearts;
+							}
+							if (player_hand[i].suit == "\6")
+							{
+								cardforp = five_of_spades;
+							}
+						}
+						if (player_hand[i].rank == "6")
+						{
+							if (player_hand[i].suit == "\5")
+							{
+								cardforp = six_of_clubs;
+							}
+							if (player_hand[i].suit == "\4")
+							{
+								cardforp = six_of_diamonds;
+							}
+							if (player_hand[i].suit == "\3")
+							{
+								cardforp = six_of_hearts;
+							}
+							if (player_hand[i].suit == "\6")
+							{
+								cardforp = six_of_spades;
+							}
+						}
+						if (player_hand[i].rank == "7")
+						{
+							if (player_hand[i].suit == "\5")
+							{
+								cardforp = seven_of_clubs;
+							}
+							if (player_hand[i].suit == "\4")
+							{
+								cardforp = seven_of_diamonds;
+							}
+							if (player_hand[i].suit == "\3")
+							{
+								cardforp = seven_of_hearts;
+							}
+							if (player_hand[i].suit == "\6")
+							{
+								cardforp = seven_of_spades;
+							}
+						}
+						if (player_hand[i].rank == "8")
+						{
+							if (player_hand[i].suit == "\5")
+							{
+								cardforp = eight_of_clubs;
+							}
+							if (player_hand[i].suit == "\4")
+							{
+								cardforp = eight_of_diamonds;
+							}
+							if (player_hand[i].suit == "\3")
+							{
+								cardforp = eight_of_hearts;
+							}
+							if (player_hand[i].suit == "\6")
+							{
+								cardforp = eight_of_spades;
+							}
+						}
+						if (player_hand[i].rank == "9")
+						{
+							if (player_hand[i].suit == "\5")
+							{
+								cardforp = nine_of_clubs;
+							}
+							if (player_hand[i].suit == "\4")
+							{
+								cardforp = nine_of_diamonds;
+							}
+							if (player_hand[i].suit == "\3")
+							{
+								cardforp = nine_of_hearts;
+							}
+							if (player_hand[i].suit == "\6")
+							{
+								cardforp = nine_of_spades;
+							}
+						}
+						if (player_hand[i].rank == "10")
+						{
+							if (player_hand[i].suit == "\5")
+							{
+								cardforp = ten_of_clubs;
+							}
+							if (player_hand[i].suit == "\4")
+							{
+								cardforp = ten_of_diamonds;
+							}
+							if (player_hand[i].suit == "\3")
+							{
+								cardforp = ten_of_hearts;
+							}
+							if (player_hand[i].suit == "\6")
+							{
+								cardforp = ten_of_spades;
+							}
+						}
+						if (player_hand[i].rank == "J")
+						{
+							if (player_hand[i].suit == "\5")
+							{
+								cardforp = jack_of_clubs;
+							}
+							if (player_hand[i].suit == "\4")
+							{
+								cardforp = jack_of_diamonds;
+							}
+							if (player_hand[i].suit == "\3")
+							{
+								cardforp = jack_of_hearts;
+							}
+							if (player_hand[i].suit == "\6")
+							{
+								cardforp = jack_of_spades;
+							}
+						}
+						if (player_hand[i].rank == "Q")
+						{
+							if (player_hand[i].suit == "\5")
+							{
+								cardforp = queen_of_clubs;
+							}
+							if (player_hand[i].suit == "\4")
+							{
+								cardforp = queen_of_diamonds;
+							}
+							if (player_hand[i].suit == "\3")
+							{
+								cardforp = queen_of_hearts;
+							}
+							if (player_hand[i].suit == "\6")
+							{
+								cardforp = queen_of_spades;
+							}
+						}
+						if (player_hand[i].rank == "K")
+						{
+							if (player_hand[i].suit == "\5")
+							{
+								cardforp = king_of_clubs;
+							}
+							if (player_hand[i].suit == "\4")
+							{
+								cardforp = king_of_diamonds;
+							}
+							if (player_hand[i].suit == "\3")
+							{
+								cardforp = king_of_hearts;
+							}
+							if (player_hand[i].suit == "\6")
+							{
+								cardforp = king_of_spades;
+							}
+						}
+						cardforp.setPosition(position, 630);
+						position += 260;
+						window.draw(cardforp);
+					}
+					//show dealer card
+					position = 300;
+					for (int i = 0; i < dealer_hand.size(); i++)
+					{
+						if (dealer_hand[i].rank == "A")
+						{
+							if (dealer_hand[i].suit == "\5")
+							{
+								cardforp = ace_of_clubs;
+							}
+							if (dealer_hand[i].suit == "\4")
+							{
+								cardforp = ace_of_diamonds;
+							}
+							if (dealer_hand[i].suit == "\3")
+							{
+								cardforp = ace_of_hearts;
+							}
+							if (dealer_hand[i].suit == "\6")
+							{
+								cardforp = ace_of_spades;
+							}
+						}
+						if (dealer_hand[i].rank == "2")
+						{
+							if (dealer_hand[i].suit == "\5")
+							{
+								cardforp = two_of_clubs;
+							}
+							if (dealer_hand[i].suit == "\4")
+							{
+								cardforp = two_of_diamonds;
+							}
+							if (dealer_hand[i].suit == "\3")
+							{
+								cardforp = two_of_hearts;
+							}
+							if (dealer_hand[i].suit == "\6")
+							{
+								cardforp = two_of_spades;
+							}
+						}
+						if (dealer_hand[i].rank == "3")
+						{
+							if (dealer_hand[i].suit == "\5")
+							{
+								cardforp = three_of_clubs;
+							}
+							if (dealer_hand[i].suit == "\4")
+							{
+								cardforp = three_of_diamonds;
+							}
+							if (dealer_hand[i].suit == "\3")
+							{
+								cardforp = three_of_hearts;
+							}
+							if (dealer_hand[i].suit == "\6")
+							{
+								cardforp = three_of_spades;
+							}
+						}
+						if (dealer_hand[i].rank == "4")
+						{
+							if (dealer_hand[i].suit == "\5")
+							{
+								cardforp = four_of_clubs;
+							}
+							if (dealer_hand[i].suit == "\4")
+							{
+								cardforp = four_of_diamonds;
+							}
+							if (dealer_hand[i].suit == "\3")
+							{
+								cardforp = four_of_hearts;
+							}
+							if (dealer_hand[i].suit == "\6")
+							{
+								cardforp = four_of_spades;
+							}
+						}
+						if (dealer_hand[i].rank == "5")
+						{
+							if (dealer_hand[i].suit == "\5")
+							{
+								cardforp = five_of_clubs;
+							}
+							if (dealer_hand[i].suit == "\4")
+							{
+								cardforp = five_of_diamonds;
+							}
+							if (dealer_hand[i].suit == "\3")
+							{
+								cardforp = five_of_hearts;
+							}
+							if (dealer_hand[i].suit == "\6")
+							{
+								cardforp = five_of_spades;
+							}
+						}
+						if (dealer_hand[i].rank == "6")
+						{
+							if (dealer_hand[i].suit == "\5")
+							{
+								cardforp = six_of_clubs;
+							}
+							if (dealer_hand[i].suit == "\4")
+							{
+								cardforp = six_of_diamonds;
+							}
+							if (dealer_hand[i].suit == "\3")
+							{
+								cardforp = six_of_hearts;
+							}
+							if (dealer_hand[i].suit == "\6")
+							{
+								cardforp = six_of_spades;
+							}
+						}
+						if (dealer_hand[i].rank == "7")
+						{
+							if (dealer_hand[i].suit == "\5")
+							{
+								cardforp = seven_of_clubs;
+							}
+							if (dealer_hand[i].suit == "\4")
+							{
+								cardforp = seven_of_diamonds;
+							}
+							if (dealer_hand[i].suit == "\3")
+							{
+								cardforp = seven_of_hearts;
+							}
+							if (dealer_hand[i].suit == "\6")
+							{
+								cardforp = seven_of_spades;
+							}
+						}
+						if (dealer_hand[i].rank == "8")
+						{
+							if (dealer_hand[i].suit == "\5")
+							{
+								cardforp = eight_of_clubs;
+							}
+							if (dealer_hand[i].suit == "\4")
+							{
+								cardforp = eight_of_diamonds;
+							}
+							if (dealer_hand[i].suit == "\3")
+							{
+								cardforp = eight_of_hearts;
+							}
+							if (dealer_hand[i].suit == "\6")
+							{
+								cardforp = eight_of_spades;
+							}
+						}
+						if (dealer_hand[i].rank == "9")
+						{
+							if (dealer_hand[i].suit == "\5")
+							{
+								cardforp = nine_of_clubs;
+							}
+							if (dealer_hand[i].suit == "\4")
+							{
+								cardforp = nine_of_diamonds;
+							}
+							if (dealer_hand[i].suit == "\3")
+							{
+								cardforp = nine_of_hearts;
+							}
+							if (dealer_hand[i].suit == "\6")
+							{
+								cardforp = nine_of_spades;
+							}
+						}
+						if (dealer_hand[i].rank == "10")
+						{
+							if (dealer_hand[i].suit == "\5")
+							{
+								cardforp = ten_of_clubs;
+							}
+							if (dealer_hand[i].suit == "\4")
+							{
+								cardforp = ten_of_diamonds;
+							}
+							if (dealer_hand[i].suit == "\3")
+							{
+								cardforp = ten_of_hearts;
+							}
+							if (dealer_hand[i].suit == "\6")
+							{
+								cardforp = ten_of_spades;
+							}
+						}
+						if (dealer_hand[i].rank == "J")
+						{
+							if (dealer_hand[i].suit == "\5")
+							{
+								cardforp = jack_of_clubs;
+							}
+							if (dealer_hand[i].suit == "\4")
+							{
+								cardforp = jack_of_diamonds;
+							}
+							if (dealer_hand[i].suit == "\3")
+							{
+								cardforp = jack_of_hearts;
+							}
+							if (dealer_hand[i].suit == "\6")
+							{
+								cardforp = jack_of_spades;
+							}
+						}
+						if (dealer_hand[i].rank == "Q")
+						{
+							if (dealer_hand[i].suit == "\5")
+							{
+								cardforp = queen_of_clubs;
+							}
+							if (dealer_hand[i].suit == "\4")
+							{
+								cardforp = queen_of_diamonds;
+							}
+							if (dealer_hand[i].suit == "\3")
+							{
+								cardforp = queen_of_hearts;
+							}
+							if (dealer_hand[i].suit == "\6")
+							{
+								cardforp = queen_of_spades;
+							}
+						}
+						if (dealer_hand[i].rank == "K")
+						{
+							if (dealer_hand[i].suit == "\5")
+							{
+								cardforp = king_of_clubs;
+							}
+							if (dealer_hand[i].suit == "\4")
+							{
+								cardforp = king_of_diamonds;
+							}
+							if (dealer_hand[i].suit == "\3")
+							{
+								cardforp = king_of_hearts;
+							}
+							if (dealer_hand[i].suit == "\6")
+							{
+								cardforp = king_of_spades;
+							}
+						}
+						cardforp.setPosition(position, 30);
+						position += 260;
+						window.draw(cardforp);
+					}
+					//show commu card
+					position = 350;
+					for (int i = 0; i < commu_hand.size() - 2; i++)
+					{
+						if (commu_hand[i].rank == "A")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = ace_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = ace_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = ace_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = ace_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "2")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = two_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = two_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = two_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = two_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "3")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = three_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = three_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = three_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = three_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "4")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = four_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = four_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = four_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = four_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "5")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = five_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = five_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = five_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = five_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "6")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = six_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = six_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = six_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = six_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "7")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = seven_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = seven_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = seven_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = seven_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "8")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = eight_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = eight_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = eight_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = eight_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "9")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = nine_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = nine_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = nine_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = nine_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "10")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = ten_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = ten_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = ten_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = ten_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "J")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = jack_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = jack_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = jack_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = jack_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "Q")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = queen_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = queen_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = queen_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = queen_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "K")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = king_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = king_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = king_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = king_of_spades;
+							}
+						}
+						cardforp.setPosition(position, 350);
+						position += 260;
+						window.draw(cardforp);
+					}
+					//show for Call
+					if (commu == 4 || commu == 5) for (int i = 3; i < commu; i++)
+					{
+						if (commu_hand[i].rank == "A")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = ace_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = ace_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = ace_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = ace_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "2")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = two_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = two_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = two_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = two_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "3")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = three_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = three_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = three_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = three_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "4")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = four_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = four_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = four_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = four_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "5")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = five_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = five_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = five_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = five_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "6")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = six_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = six_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = six_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = six_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "7")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = seven_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = seven_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = seven_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = seven_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "8")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = eight_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = eight_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = eight_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = eight_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "9")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = nine_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = nine_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = nine_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = nine_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "10")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = ten_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = ten_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = ten_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = ten_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "J")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = jack_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = jack_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = jack_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = jack_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "Q")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = queen_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = queen_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = queen_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = queen_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "K")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = king_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = king_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = king_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = king_of_spades;
+							}
+						}
+						cardforp.setPosition(position, 350);
+						position += 260;
+						window.draw(cardforp);
+					}
+					//show for allin, fold
+					if (fold == true || Allin == true) for (int i = commu; i < 5; i++)
+					{
+						if (commu_hand[i].rank == "A")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = ace_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = ace_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = ace_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = ace_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "2")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = two_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = two_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = two_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = two_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "3")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = three_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = three_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = three_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = three_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "4")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = four_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = four_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = four_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = four_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "5")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = five_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = five_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = five_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = five_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "6")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = six_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = six_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = six_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = six_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "7")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = seven_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = seven_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = seven_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = seven_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "8")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = eight_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = eight_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = eight_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = eight_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "9")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = nine_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = nine_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = nine_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = nine_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "10")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = ten_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = ten_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = ten_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = ten_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "J")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = jack_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = jack_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = jack_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = jack_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "Q")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = queen_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = queen_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = queen_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = queen_of_spades;
+							}
+						}
+						if (commu_hand[i].rank == "K")
+						{
+							if (commu_hand[i].suit == "\5")
+							{
+								cardforp = king_of_clubs;
+							}
+							if (commu_hand[i].suit == "\4")
+							{
+								cardforp = king_of_diamonds;
+							}
+							if (commu_hand[i].suit == "\3")
+							{
+								cardforp = king_of_hearts;
+							}
+							if (commu_hand[i].suit == "\6")
+							{
+								cardforp = king_of_spades;
+							}
+						}
+						cardforp.setPosition(position, 350);
+						position += 260;
+						window.draw(cardforp);
+					}
 
+				}
+				window.draw(ExitButton);
+				window.draw(bet10);
+				window.draw(bet50);
+				window.draw(bet100);
+				window.draw(bet500);
+				window.draw(bet1000);
+
+				// Balance :
 				string bforP;
 				bforP = "Balance: " + to_string(balance);
 				Text balanceText;
@@ -1203,21 +2590,9 @@ int main() {
 				balanceText.setPosition(30, 300);
 				balanceText.setCharacterSize(45);
 				window.draw(balanceText);
-
+				// Bet Value :
 				bet.drawBetBar(window);
-
-				//window.draw(PK_BJ);
-				window.draw(bet10);
-				window.draw(bet50);
-				window.draw(bet100);
-				window.draw(bet500);
-				window.draw(bet1000);
-				//window.draw(BetButton);
-				window.draw(ExitButton);
 				window.display();
-
-
-				
 
 			}
 			if (gamestate == 3)
@@ -1298,3 +2673,4 @@ int main() {
 
 	return 0;
 }
+
